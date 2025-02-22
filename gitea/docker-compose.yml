@@ -18,10 +18,10 @@ services:
       - "3000:3000"
       - "2222:22"
     volumes:
-      - ./data:/data
-      # Mount custom files
-      - ./data/gitea/public/css:/data/gitea/public/css
-      - ./data/gitea/templates/custom:/data/gitea/templates/custom
+      - gitea_data:/data
+      # Mount our compiled frontend assets
+      - ./frontend/dist:/data/gitea/public/custom
+      - ./frontend/templates:/data/gitea/templates/custom
     depends_on:
       - postgres
     networks:
@@ -36,9 +36,13 @@ services:
       - POSTGRES_PASSWORD=gitea
       - POSTGRES_DB=gitea
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - gitea
+
+volumes:
+  gitea_data:
+  postgres_data:
 
 networks:
   gitea:
