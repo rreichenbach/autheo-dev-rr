@@ -1,0 +1,45 @@
+services:
+  gitea:
+    build:
+      context: github
+      dockerfile: Dockerfile
+      args:
+        - TAGS=sqlite sqlite_unlock_notify
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      # Custom appearance settings
+      - GITEA__ui__DEFAULT_THEME=gitea
+      - GITEA__ui__THEMES=gitea,arc-green,custom
+      - GITEA__server__LANDING_PAGE=explore
+    restart: always
+    ports:
+      - "3000:3000"
+      - "2222:22"
+    volumes:
+      - ./data:/data
+      # Mount custom files
+      - ./data/gitea/public/css:/data/gitea/public/css
+      - ./data/gitea/templates/custom:/data/gitea/templates/custom
+    depends_on:
+      - postgres
+    networks:
+      - gitea
+
+  postgres:
+    image: postgres:14
+    container_name: gitea-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=gitea
+      - POSTGRES_DB=gitea
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    networks:
+      - gitea
+
+networks:
+  gitea:
+    driver: bridge
