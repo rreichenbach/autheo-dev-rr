@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: openproject-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=openproject
+      - POSTGRES_PASSWORD=openproject
+      - POSTGRES_DB=openproject
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - openproject-network
+
+  openproject:
+    image: openproject/openproject:15.3.0
+    container_name: openproject
+    environment:
+      - DATABASE_URL=postgres://openproject:openproject@postgres:5432/openproject
+      - RAILS_CACHE_STORE=memcache
+      - RAILS_CACHE_STORE_URL=memcached:11211
+      - RAILS_MIN_THREADS=4
+      - RAILS_MAX_THREADS=16
+      - RAILS_SERVE_STATIC_FILES=true
+      - OPENPROJECT_HTTPS=false
+      - OPENPROJECT_HOST__NAME=localhost:8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - memcached
+    networks:
+      - openproject-network
+
+  memcached:
+    image: memcached:1.6
+    container_name: openproject-memcached
+    command: ["-m", "64"]
+    networks:
+      - openproject-network
+
+volumes:
+  postgres_data:
+
+networks:
+  openproject-network:
+    driver: bridge
