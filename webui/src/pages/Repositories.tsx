@@ -2,7 +2,20 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { GitBranch, Star, GitFork, Search, Filter } from 'lucide-react'
 
-const mockRepositories = [
+type Language = 'Solidity' | 'Rust' | 'TypeScript'
+
+interface Repository {
+  name: string
+  description: string
+  stars: number
+  forks: number
+  language: Language
+  lastUpdated: string
+  status: 'Active' | 'Inactive'
+  type: 'Public' | 'Private'
+}
+
+const mockRepositories: Repository[] = [
   {
     name: 'Smart Contract Library',
     description: 'A collection of reusable smart contracts and utilities',
@@ -35,7 +48,7 @@ const mockRepositories = [
   }
 ]
 
-const languageColors = {
+const languageColors: Record<Language, string> = {
   Solidity: 'bg-green-400',
   Rust: 'bg-orange-400',
   TypeScript: 'bg-blue-400'
