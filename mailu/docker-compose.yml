@@ -1,0 +1,92 @@
+services:
+  front:
+    image: ghcr.io/mailu/nginx:2.0
+    restart: always
+    container_name: mailu-front
+    env_file: mailu.env
+    ports:
+      - "25:25"    # SMTP
+      - "465:465"  # SMTPS
+      - "587:587"  # Submission
+      - "993:993"  # IMAPS
+      - "995:995"  # POP3S
+      - "143:143"  # IMAP
+      - "110:110"  # POP3
+      - "80:80"    # HTTP
+      - "443:443"  # HTTPS
+    volumes:
+      - ./data/certs:/certs
+      - ./data/overrides/nginx:/overrides:ro
+    networks:
+      - mailu-internal
+    depends_on:
+      - admin
+
+  admin:
+    image: ghcr.io/mailu/admin:2.0
+    restart: always
+    container_name: mailu-admin
+    env_file: mailu.env
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    volumes:
+      - ./data/data:/data
+      - ./data/dkim:/dkim
+    networks:
+      - mailu-internal
+    depends_on:
+      - redis
+
+  imap:
+    image: ghcr.io/mailu/dovecot:2.0
+    restart: always
+    container_name: mailu-imap
+    env_file: mailu.env
+    volumes:
+      - ./data/mail:/mail
+      - ./data/overrides/dovecot:/overrides:ro
+    networks:
+      - mailu-internal
+    depends_on:
+      - front
+
+  smtp:
+    image: ghcr.io/mailu/postfix:2.0
+    restart: always
+    container_name: mailu-smtp
+    env_file: mailu.env
+    volumes:
+      - ./data/mailqueue:/queue
+      - ./data/overrides/postfix:/overrides:ro
+    networks:
+      - mailu-internal
+    depends_on:
+      - front
+
+  antispam:
+    image: ghcr.io/mailu/rspamd:2.0
+    restart: always
+    container_name: mailu-antispam
+    env_file: mailu.env
+    volumes:
+      - ./data/filter:/var/lib/rspamd
+      - ./data/overrides/rspamd:/overrides:ro
+    networks:
+      - mailu-internal
+    depends_on:
+      - front
+
+  redis:
+    image: redis:alpine
+    restart: always
+    container_name: mailu-redis
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - mailu-internal
+
+networks:
+  mailu-internal:
+    name: mailu-internal
+    driver: bridge

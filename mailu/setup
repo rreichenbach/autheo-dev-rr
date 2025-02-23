@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>  <head>    <title>Mailu setup</title>    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <!-- Bootstrap -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">  </head>
+  <body>
+
+<div id=no_java_script class="noscriptmsg">
+  JavaScript is not enabled or JavaScript files were blocked. The Mailu setup site does not function when JavaScript is disabled.
+</div>
+
+<div id="container" class="container" style="display:none;">
+  <h1>Mailu configuration</h1>
+  
+  <p>
+    Version
+    <select id=version_select onchange="window.location.href=this.value;" class="btn btn-primary dropdown-toggle">
+      <option value="/2024.06" selected >2024.06</option>
+      <option value="/master" >master</option>
+    </select>
+  </p>
+
+
+  <div class="panel panel-warning">
+    <div class="panel-heading">
+      <h3 class="panel-title">Before starting, read the docs!</h3>
+    </div>
+    <div class="panel-body">
+        Mailu is not perfectly documented, but still has a lot of documentation
+  available at <a href="https://mailu.io">mailu.io</a>. Make sure you read
+  the appropriate documentation for your setup and have all the requirements
+  ready when using this wizard.
+
+    </div>
+  </div>
+
+  <form method="post" action="/2024.06/submit">
+  <input type="hidden" name="flavor" value="compose">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Step 1 - Initial configuration</h3>
+    </div>
+    <div class="panel-body">
+      <p>Before starting, some variables must be set.</p>
+
+<div class="form-group">
+  <label>Mailu storage path: </label>
+<!--   Validates path -->
+  <input class="form-control" type="text" name="root" value="/mailu" required pattern="^\/[\-_A-Za-z0-9\.]+(\/[\-_A-Za-z0-9\.]*)*">
+</div>
+
+<p>In the following sections we need to set the postmaster address. This is a combination of the <i>postmaster</i> local part and the <i>main mail domain</i>.
+The <i>main mail domain</i> is also used as </i>"server display name"</i>. This is the way the SMTP server identifies itself when connecting to others.
+The Postmaster will get an e-mail address &lt;postmaster&gt;@&lt;main_domain&gt;. This address will receive the DMARC "rua" and "ruf" reports.
+Or in plain English: if receivers start to classify your mail as spam, this postmaster will be informed.</p>
+
+<div class="form-group">
+  <label>
+    Main mail domain and server display name.
+  </label>
+<!--   Validates domain name -->
+  <input class="form-control" type="text" name="domain" placeholder="e.g. mailu.io"
+  		required pattern="^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$">
+</div>
+
+<div class="form-group">
+  <label>Postmaster local part</label>
+  <input class="form-control" type="text" name="postmaster" value="admin" required>
+</div>
+
+<div class="form-group">
+  <label>Choose how you wish to handle security <a href="https://mailu.io/2024.06/compose/setup.html#tls-certificates">TLS certificates</a></label>
+  <br/>
+  <select class="btn btn-primary dropdown-toggle" name="tls_flavor">
+  	<option value="letsencrypt" >letsencrypt</option>
+  	<option value="cert" >cert</option>
+  	<option value="notls" >notls</option>
+  	<option value="mail" >mail</option>
+  	<option value="mail-letsencrypt" >mail-letsencrypt</option>
+  </select>
+</div>
+
+<div class="form-group">
+  <label>Authentication rate limit per IP for failed login attempts on unique non-existing accounts (password spraying counter-measure)</label>
+  <!--   Validates number input only -->
+  <p><input class="form-control" style="width: 9%; display: inline;" type="number" name="auth_ratelimit_ip" value="5" required > / hour
+  </p>
+</div>
+
+<div class="form-group">
+  <label>Authentication rate limit per user</label>
+  <!--   Validates number input only -->
+  <p><input class="form-control" style="width: 9%; display: inline;" type="number" name="auth_ratelimit_user"
+  		value="50" required > / day
+  </p>
+</div>
+
+<div class="form-group">
+  <label>Outgoing message rate limit (per user)</label>
+  <!--   Validates number input only -->
+  <p><input class="form-control" style="width: 7%; display: inline;" type="number" name="message_ratelimit_pd" value="200" required > / day
+  </p>
+</div>
+
+<div class="form-check form-check-inline">
+  <label class="form-check-label">
+    <input class="form-check-input" type="checkbox" name="statistics_enabled"  value="True">
+    Opt-in for anonymized statistics
+  </label>
+</div>
+
+<div class="form-group">
+  <label>Website name</label>
+  <input class="form-control" type="text" name="site_name" value="Mailu" required>
+</div>
+
+<div class="form-group">
+  <label>Linked Website URL</label>
+<!--   Validates url with or without https:// -->
+  <input class="form-control" type="url" name="website" value="https://mailu.io" required
+		pattern="^(https?://)?([a-zA-Z0-9]([a-zA-ZäöüÄÖÜ0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$">
+</div>
+
+<p>The admin interface is the main Mailu-specific bit, it provides tools to
+manage your email domains, users, etc.</p>
+
+<div class="form-group">
+    <input type="checkbox" name="admin_enabled" value="true" id="admin" checked>
+  	<label>Enable the admin UI</label>
+</div>
+
+<p>The API interface is a RESTful API for changing the Mailu configuration.
+  Anything that can be configured via the Mailu web administration interface,
+  can also be configured via the RESTful API. For enabling the API, an API token must be configured.
+  It is not possible to use the API without an API token.</p>
+
+  <div class="form-group">
+      <input type="checkbox" name="api_enabled" value="true" id="api_enabled" >
+      <label>Enable the API</label>
+      <br>
+      <label name="api_token_label" id="api_token_label">API token</label>
+      <input class="form-control" type="text" name="api_token" id="api_token" style="display: none" value="0FPVI4NZRLNH9ZK9Q1WIL15CFK8JYQ4A">
+  </div>
+
+
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Step 2 - Pick some features</h3>
+    </div>
+    <div class="panel-body">
+      <p>Mailu comes with multiple base features, including a specific admin
+interface, Web email clients, antispam, antivirus, etc.
+In this section you can enable the services to you liking.</p>
+
+<!-- 	Switched from radio buttons to dropdown menu in order to remove the checkbox -->
+<p>A Webmail is a Web interface exposing an email client. Mailu webmails are
+bound to the internal IMAP and SMTP server for users to access their mailbox through
+the Web. By exposing a complex application such as a Webmail, you should be aware of
+the security implications caused by such an increase of attack surface.<p>
+<div class="form-group">
+  <label>Enable Web email client</label>
+  <br/>
+  <select class="btn btn-primary dropdown-toggle" name="webmail_type" id="webmail">
+  	<option value="none" >none</option>
+  	<option value="roundcube" >roundcube</option>
+  	<option value="snappymail" >snappymail</option>
+  </select>
+  <p></p>
+</div>
+
+
+<div class="form-check form-check-inline">
+  <label class="form-check-label">
+    <input class="form-check-input" type="checkbox" name="antivirus_enabled" value="clamav">
+    Enable the antivirus service
+  </label>
+
+  <i>An antivirus server helps fighting large scale virus spreading campaigns that leverage
+    e-mail for initial infection. Make sure that you have at least 1GB of memory for ClamAV to
+    load its signature database.</i>
+</div>
+
+
+<div class="form-check form-check-inline">
+  <label class="form-check-label">
+    <input class="form-check-input" type="checkbox" name="webdav_enabled" value="radicale">
+    Enable the webdav service
+  </label>
+
+  <i>A Webdav server exposes a Dav interface over HTTP so that clients can store
+    contacts or calendars using the mail account.</i>
+</div>
+
+
+<div class="form-check form-check-inline">
+  <label class="form-check-label">
+    <input class="form-check-input" type="checkbox" name="fetchmail_enabled" value="true">
+    Enable fetchmail
+  </label>
+
+  <i>Fetchmail allows users to retrieve mail from an external mail-server via IMAP/POP3 and puts it in their inbox.</i>
+</div>
+
+<div class="form-check form-check-inline">
+  <label class="form-check-label">
+    <input class="form-check-input" type="checkbox" name="oletools_enabled" value="true" checked>
+    Enable oletools
+  </label>
+
+  <i>Oletools scans documents in email attachments for malicious macros. It has a much lower memory footprint than a full-fledged anti-virus.</i>
+</div>
+
+<div class="form-check form-check-inline">
+  <label class="form-check-label">
+    <input class="form-check-input" type="checkbox" name="tika_enabled" value="true">
+    Enable Tika
+  </label>
+
+  <i>Tika enables the functionality for searching through attachments. Tika scans documents in email attachments, process (OCR, keyword extraction) and then index them in a way they can be efficiently searched. This requires significant resources (RAM, CPU and storage).</i>
+</div>
+
+
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Step 3 - expose Mailu to the world</h3>
+    </div>
+    <div class="panel-body">
+      <p>A mail server must be exposed to the world to receive emails, send emails,
+and let users access their mailboxes. Mailu has some flexibility in the way
+you expose it to the world.</p>
+
+<p>Among Mailu services, the <em>front</em> server is the one accepting connections,
+be it directly from the outside world, through a reverse proxy or in any
+complex configuration that you might want to set up. It needs to listen on some
+IP addresses in order to expose its public services. You must at least set up
+an IPv4 or an IPv6 address if you wish to access Mailu.</p>
+
+<p><span class="label label-warning">Warning</span> You must use specific addresses, please
+avoid generic all-interfaces addresses like <code>0.0.0.0</code> or <code>::</code>. If you still want to use generic addresses you <b>MUST</b> disable <code>userland-proxy</code>; failing to do so will turn your Mailu installation into an open-relay.
+<a href="https://mailu.io/2024.06/compose/setup.html#bind-address">How to find these addresses.</a> <a href="https://mailu.io/2024.06/faq.html#how-to-make-ipv6-work">How to disable userland-proxy.</a></p>
+
+<div class="form-group">
+  <label>IPv4 listen address</label>
+<!--   Validates IPv4 address -->
+  <input class="form-control" type="text" name="bind4" value="127.0.0.1" >
+  <label>Subnet of the docker network. This should not conflict with any networks to which your system is connected. (Internal and external!)
+    Usually the format is '*.*.*.0/24'</label>
+  <input class="form-control" type="text" name="subnet" value="192.168.203.0/24">
+</div>
+
+<div class="form-check form-check-inline">
+  <label class="form-check-label">
+    <input class="form-check-input" type="checkbox" name="ipv6_enabled" value="true" id="enable_ipv6">
+    Enable IPv6
+  </label>
+</div>
+
+<div class="form-group" id="ipv6" style="display: none">
+  <p><span class="label label-danger">Read this:</span> Docker currently does not expose the IPv6 ports properly, as it does not interface with <code>ip6tables</code>. Read <a href="https://mailu.io/2024.06/faq.html#how-to-make-ipv6-work">FAQ section</a> and be <b>very careful</b>. We do <b>NOT</b> recommend that you enable this!</p>
+  <label>IPv6 listen address</label>
+<!--   Validates IPv6 address -->
+  <input class="form-control" type="text" name="bind6" value="::1" >
+  <label>Subnet of the docker network. This should not conflict with any networks to which your system is connected. (Internal and external!)</label>
+  <input class="form-control" type="text" name="subnet6" required value="fd8a:9309:ed6b:beef::/64">
+</div>
+
+<div class="form-check form-check-inline">
+  <p>The unbound resolver enables Mailu to do DNSSEC verification, DNS root lookups and caching. This also helps the antispam service not to get blocked by the public or ISP DNS servers.</p>
+  <label class="form-check-label">
+    <input class="form-check-input" type="checkbox" id="resolver_enabled" name="resolver_enabled" value="true" checked>
+    Enable an internal DNS resolver (unbound)
+  </label>
+</div>
+<div class="form-group" id="unbound" style="display: none">
+	<p><span class="label label-danger">Read this:</span> Mailu requires a <b>validating, DNSSEC-enabled</b> DNS resolver</b> to function. Be sure to read our <a href="https://mailu.io/2024.06/faq.html#the-admin-container-won-t-start-and-its-log-says-critical-your-dns-resolver-isn-t-doing-dnssec-validation">FAQ entry</a> on the topic.</p>
+</div>
+
+<p>Your server will be available under a main hostname but may expose multiple public
+hostnames. Every e-mail domain that points to this server must have one of the
+hostnames in its <code>MX</code> record. Hostnames must be comma-separated. If you're having
+trouble accessing your admin interface, make sure it is the first entry here (and possibly the
+same as your <code>DOMAIN</code> entry from earlier). Also make sure that the first entry in
+this list resolves to the IP address of your server, and that the reverse DNS entry for
+the IP address of your server resolves to this first entry in this list.</p>
+
+<div class="form-group">
+  <label>Public hostnames</label>
+<!--   Validates hostname or list of hostnames -->
+  <input class="form-control" type="text" name="hostnames" placeholder="my.host.name,other.host.name" multiple required
+    	pattern="^(?:(?:\w+(?:-+\w+)*\.)+[a-z]+)*(?:,(?:(?:\w+(?:-+\w+)*\.)+[a-z]+)\s*)*$">
+</div>
+
+    </div>
+  </div>
+  <input class="btn btn-primary" type="submit" value="Setup Mailu">
+  </form>
+
+</div>
+<p></p>
+
+
+<script type="text/javascript" src="/2024.06/static/jquery.min.js"></script>
+<script type="text/javascript" src="/2024.06/static/render.js"></script>
+    <script src="/2024.06/static/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </body></html>
