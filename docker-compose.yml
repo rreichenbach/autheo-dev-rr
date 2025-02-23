@@ -7,7 +7,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=autheo_secure_pass
       # Create both databases during initialization
-      - POSTGRES_MULTIPLE_DATABASES=gitea,openproject
+      - POSTGRES_MULTIPLE_DATABASES=gitea,openproject,n8n
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-multiple-dbs.sh:/docker-entrypoint-initdb.d/init-multiple-dbs.sh
@@ -85,11 +85,50 @@ services:
       - autheo-devhub
     restart: always
 
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: autheo-devhub-n8n
+    restart: always
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_USER_MANAGEMENT_DISABLED=false
+      - N8N_BASIC_AUTH_ACTIVE=false
+      - N8N_SECURE_COOKIE=false
+      - N8N_ENCRYPTION_KEY=a-random-32-character-string-here
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=America/Denver
+      - N8N_EMAIL_MODE=smtp
+      - N8N_SMTP_HOST=${SMTP_HOST:-smtp.example.com}
+      - N8N_SMTP_PORT=${SMTP_PORT:-587}
+      - N8N_SMTP_USER=${SMTP_USER:-your-email@example.com}
+      - N8N_SMTP_PASS=${SMTP_PASSWORD:-your-smtp-password}
+      - N8N_SMTP_SENDER=${SMTP_SENDER:-your-email@example.com}
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - autheo-devhub
+
 volumes:
   postgres_data:
     name: autheo-devhub-postgres-data
   gitea_data:
     name: autheo-devhub-gitea-data
+  n8n_data:
+    name: autheo-devhub-n8n-data
 
 networks:
   autheo-devhub:
