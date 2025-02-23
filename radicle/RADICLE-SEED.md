@@ -1,3 +1,4 @@
+##https://radicle.xyz/guides/seeder 
 rad auth # from inside of docker container
 
 $ rad auth 
@@ -49,3 +50,5 @@ Common `rad` commands used in various situations:
         sync         Sync repositories to the network
 
 See `rad <command> --help` to learn about a specific command.
+
+$ rad node start # docker exec -it radicle rad node
