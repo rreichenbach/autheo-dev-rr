@@ -1,0 +1,97 @@
+services:
+  postgres:
+    image: postgres:14
+    container_name: autheo-devhub-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=autheo_secure_pass
+      # Create both databases during initialization
+      - POSTGRES_MULTIPLE_DATABASES=gitea,openproject
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-multiple-dbs.sh:/docker-entrypoint-initdb.d/init-multiple-dbs.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - autheo-devhub
+
+  openproject:
+    image: openproject/openproject:15.3.0
+    container_name: autheo-devhub-openproject
+    environment:
+      - DATABASE_URL=postgres://openproject:openproject@postgres:5432/openproject
+      - RAILS_CACHE_STORE=memcache
+      - RAILS_CACHE_STORE_URL=memcached:11211
+      - RAILS_MIN_THREADS=4
+      - RAILS_MAX_THREADS=16
+      - RAILS_SERVE_STATIC_FILES=true
+      - OPENPROJECT_HTTPS=false
+      - OPENPROJECT_HOST__NAME=localhost:8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      memcached:
+        condition: service_started
+    networks:
+      - autheo-devhub
+
+  memcached:
+    image: memcached:1.6
+    container_name: autheo-devhub-memcached
+    command: ["-m", "64"]
+    healthcheck:
+      test: ["CMD-SHELL", "echo stats | nc localhost 11211"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - autheo-devhub
+
+  gitea:
+    build:
+      context: ./gitea/github
+      dockerfile: Dockerfile
+      args:
+        - TAGS=sqlite sqlite_unlock_notify
+    container_name: autheo-devhub-gitea
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=postgres
+      - DB_NAME=gitea
+      - DB_USER=gitea
+      - DB_PASSWD=gitea
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__ui__DEFAULT_THEME=gitea
+      - GITEA__ui__THEMES=gitea,arc-green,custom
+      - GITEA__server__LANDING_PAGE=explore
+    volumes:
+      - gitea_data:/data
+      - ./gitea/frontend/dist:/data/gitea/public/custom
+      - ./gitea/frontend/templates:/data/gitea/templates/custom
+    ports:
+      - "3000:3000"
+      - "2222:22"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - autheo-devhub
+    restart: always
+
+volumes:
+  postgres_data:
+    name: autheo-devhub-postgres-data
+  gitea_data:
+    name: autheo-devhub-gitea-data
+
+networks:
+  autheo-devhub:
+    name: autheo-devhub-network
+    driver: bridge
