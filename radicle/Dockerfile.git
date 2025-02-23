@@ -31,6 +31,7 @@ FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y \
     libssl3 \
     git \
+    expect \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the built binaries from radicle
@@ -51,6 +52,7 @@ RUN mkdir -p $RAD_HOME
 # Expose necessary ports
 EXPOSE 8080 9000
 
-# Set entrypoint to rad
-ENTRYPOINT ["rad"]
-CMD ["node", "start"]
+# Initialize profile and start node
+COPY --chown=radicle:radicle docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

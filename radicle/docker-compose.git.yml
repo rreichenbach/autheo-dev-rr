@@ -9,6 +9,8 @@ services:
       - "9000:9000"
     volumes:
       - radicle-git-data:/home/radicle/.radicle
+    tty: true
+    stdin_open: true
 
 volumes:
   radicle-git-data:
