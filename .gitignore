@@ -3,3 +3,4 @@
 /gitea/postgres
 /gitea/github
 /mailu/data/filter
+/webui/node_modules
