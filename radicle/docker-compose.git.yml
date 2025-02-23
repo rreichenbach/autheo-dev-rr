@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  radicle-git:
+    build:
+      context: .
+      dockerfile: Dockerfile.git
+    ports:
+      - "8080:8080"
+      - "9000:9000"
+    volumes:
+      - radicle-git-data:/home/radicle/.radicle
+
+volumes:
+  radicle-git-data:

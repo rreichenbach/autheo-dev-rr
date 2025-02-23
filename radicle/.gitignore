@@ -1,0 +1,14 @@
+# Docker volumes
+radicle_data/
+radicle_git/
+
+# Environment files
+.env
+*.env
+
+# Build artifacts
+*.log
+
+# System files
+.DS_Store
+Thumbs.db

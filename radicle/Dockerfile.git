@@ -1,0 +1,56 @@
+FROM rust:1.75-slim-bookworm as git-builder
+
+RUN apt-get update && apt-get install -y \
+    git \
+    pkg-config \
+    libssl-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src
+RUN git clone https://github.com/radicle-dev/heartwood.git radicle && \
+    cd radicle && \
+    git checkout v1.0.0-rc.5
+WORKDIR /usr/src/radicle
+
+# List directories and build each binary
+RUN ls -la && \
+    find . -name "Cargo.toml" -type f && \
+    cargo build --release --workspace && \
+    # Verify binaries exist
+    find target/release -type f -executable && \
+    test -f target/release/rad && \
+    test -f target/release/radicle-httpd && \
+    test -f target/release/radicle-node || \
+    (echo "radicle-git build failed - binaries not found" && exit 1)
+
+# Create final image
+FROM debian:bookworm-slim
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    libssl3 \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the built binaries from radicle
+COPY --from=git-builder /usr/src/radicle/target/release/rad /usr/local/bin/
+COPY --from=git-builder /usr/src/radicle/target/release/radicle-httpd /usr/local/bin/
+COPY --from=git-builder /usr/src/radicle/target/release/radicle-node /usr/local/bin/
+
+# Create radicle user
+RUN useradd -ms /bin/bash radicle
+
+USER radicle
+WORKDIR /home/radicle
+
+# Initialize radicle home directory
+ENV RAD_HOME=/home/radicle/.radicle
+RUN mkdir -p $RAD_HOME
+
+# Expose necessary ports
+EXPOSE 8080 9000
+
+# Set entrypoint to rad
+ENTRYPOINT ["rad"]
+CMD ["node", "start"]
