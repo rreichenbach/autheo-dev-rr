@@ -1,4 +1,23 @@
 services:
+  webui:
+    build:
+      context: ./webui
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=development
+        - DEBUG=vite:*
+    container_name: autheo-devhub-webui
+    restart: always
+    ports:
+      - "80:80"  # Changed from 8000:80 as requested
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - autheo-devhub
+
   postgres:
     image: postgres:14
     container_name: autheo-devhub-postgres
@@ -6,7 +25,6 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=autheo_secure_pass
-      # Create both databases during initialization
       - POSTGRES_MULTIPLE_DATABASES=gitea,openproject,n8n
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -30,9 +48,9 @@ services:
       - RAILS_MAX_THREADS=16
       - RAILS_SERVE_STATIC_FILES=true
       - OPENPROJECT_HTTPS=false
-      - OPENPROJECT_HOST__NAME=localhost:8080
+      - OPENPROJECT_HOST__NAME=localhost:8081
     ports:
-      - "8080:8080"
+      - "8081:8080"
     depends_on:
       postgres:
         condition: service_healthy
@@ -76,7 +94,7 @@ services:
       - ./gitea/frontend/dist:/data/gitea/public/custom
       - ./gitea/frontend/templates:/data/gitea/templates/custom
     ports:
-      - "3000:3000"
+      - "8082:3000"
       - "2222:22"
     depends_on:
       postgres:
@@ -97,14 +115,14 @@ services:
       - DB_POSTGRESDB_USER=n8n
       - DB_POSTGRESDB_PASSWORD=n8n
       - N8N_HOST=localhost
-      - N8N_PORT=5678
+      - N8N_PORT=8083
       - N8N_PROTOCOL=http
       - N8N_USER_MANAGEMENT_DISABLED=false
       - N8N_BASIC_AUTH_ACTIVE=false
       - N8N_SECURE_COOKIE=false
       - N8N_ENCRYPTION_KEY=a-random-32-character-string-here
       - NODE_ENV=production
-      - WEBHOOK_URL=http://localhost:5678/
+      - WEBHOOK_URL=http://localhost:8083/
       - GENERIC_TIMEZONE=America/Denver
       - N8N_EMAIL_MODE=smtp
       - N8N_SMTP_HOST=${SMTP_HOST:-smtp.example.com}
@@ -113,7 +131,7 @@ services:
       - N8N_SMTP_PASS=${SMTP_PASSWORD:-your-smtp-password}
       - N8N_SMTP_SENDER=${SMTP_SENDER:-your-email@example.com}
     ports:
-      - "5678:5678"
+      - "8083:8083"
     volumes:
       - n8n_data:/home/node/.n8n
     depends_on:

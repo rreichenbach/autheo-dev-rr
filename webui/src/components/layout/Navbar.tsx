@@ -27,14 +27,17 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, setIsDark }) => {
               
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-6">
-                <Link to="/repositories" className="nav-link">
+                <Link to="http://localhost:8082/explore/repos" className="nav-link">
                   Repositories
                 </Link>
-                <Link to="/community" className="nav-link">
-                  Community
+               <Link to="http://localhost:8081/projects" className="nav-link">
+                  Project Management
                 </Link>
-                <Link to="/governance" className="nav-link">
-                  Governance
+                <Link to="http://localhost:8082/explore/organizations" className="nav-link">
+                  Governance (DAO)
+                </Link>
+                <Link to="http://localhost:8083/home/workflows" className="nav-link">
+                  Agentic AI Workflows
                 </Link>
               </div>
             </div>
@@ -56,7 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, setIsDark }) => {
 
               {/* Create Repository button */}
               <Link
-                to="/repositories/create"
+                to="http://localhost:8082/repo/create"
                 className="hidden md:inline-flex glass-button"
               >
                 Create Repository
