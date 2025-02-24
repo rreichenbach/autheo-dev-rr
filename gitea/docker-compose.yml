@@ -1,49 +1,36 @@
+version: '3.8'
+
 services:
   gitea:
-    build:
-      context: github
-      dockerfile: Dockerfile
-      args:
-        - TAGS=sqlite sqlite_unlock_notify
-    container_name: gitea
+    image: gitea/gitea:1.22.6
+    container_name: autheo-devhub-gitea
     environment:
       - USER_UID=1000
       - USER_GID=1000
-      # Custom appearance settings
-      - GITEA__ui__DEFAULT_THEME=gitea
-      - GITEA__ui__THEMES=gitea,arc-green,custom
-      - GITEA__server__LANDING_PAGE=explore
     restart: always
+    networks:
+      - gitea
+    volumes:
+      - ./data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
-      - "3000:3000"
-      - "2222:22"
-    volumes:
-      - gitea_data:/data
-      # Mount our compiled frontend assets
-      - ./frontend/dist:/data/gitea/public/custom
-      - ./frontend/templates:/data/gitea/templates/custom
-    depends_on:
-      - postgres
-    networks:
-      - gitea
+      - "8082:3000"
+      - "222:22"
 
-  postgres:
-    image: postgres:14
-    container_name: gitea-postgres
+  webui:
+    build:
+      context: ./webui
+      dockerfile: Dockerfile
+    container_name: autheo-devhub-gitea-webui
     restart: always
-    environment:
-      - POSTGRES_USER=gitea
-      - POSTGRES_PASSWORD=gitea
-      - POSTGRES_DB=gitea
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     networks:
       - gitea
-
-volumes:
-  gitea_data:
-  postgres_data:
+    ports:
+      - "8084:8084"
+    depends_on:
+      - gitea
 
 networks:
   gitea:
-    driver: bridge
+    name: gitea_network
