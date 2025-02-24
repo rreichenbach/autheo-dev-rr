@@ -1,8 +1,8 @@
-import { GiteaApiResponse, SearchParams } from './types';
+import { GiteaApiResponse, SearchParams, GiteaRepo, GiteaUser } from './types';
 
 const GITEA_API_URL = 'http://localhost:8082/api/v1';
 
-export const searchRepositories = async (params: SearchParams): Promise<GiteaApiResponse> => {
+export const searchRepositories = async (params: SearchParams): Promise<GiteaApiResponse<GiteaRepo>> => {
   const searchParams = new URLSearchParams();
   
   // Always include page and limit
@@ -21,7 +21,6 @@ export const searchRepositories = async (params: SearchParams): Promise<GiteaApi
   if (params.private !== undefined) searchParams.append('private', params.private ? '1' : '0');
 
   try {
-    // Use the search endpoint
     const response = await fetch(`${GITEA_API_URL}/repos/search?${searchParams.toString()}`, {
       headers: {
         'Accept': 'application/json',
@@ -37,7 +36,7 @@ export const searchRepositories = async (params: SearchParams): Promise<GiteaApi
     return {
       ok: true,
       data: {
-        repos: (data.data || []).map((repo: any) => ({
+        items: (data.data || []).map((repo: any) => ({
           id: repo.id,
           name: repo.name,
           owner: {
@@ -71,7 +70,61 @@ export const searchRepositories = async (params: SearchParams): Promise<GiteaApi
     return {
       ok: false,
       data: {
-        repos: [],
+        items: [],
+        total: 0,
+      },
+    };
+  }
+};
+
+export const searchUsers = async (params: SearchParams): Promise<GiteaApiResponse<GiteaUser>> => {
+  const searchParams = new URLSearchParams();
+  
+  // Always include page and limit
+  searchParams.append('page', (params.page || 1).toString());
+  searchParams.append('limit', (params.limit || 20).toString());
+  
+  // Add search parameters
+  if (params.q) searchParams.append('q', params.q);
+  if (params.sort) searchParams.append('sort', params.sort);
+
+  try {
+    const response = await fetch(`${GITEA_API_URL}/users/search?${searchParams.toString()}`, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    return {
+      ok: true,
+      data: {
+        items: (data.data || []).map((user: any) => ({
+          id: user.id,
+          username: user.login || user.username,
+          fullName: user.full_name,
+          avatarUrl: user.avatar_url,
+          location: user.location,
+          email: user.email,
+          isPrivate: user.visibility === 'private',
+          keepEmailPrivate: user.keep_email_private || false,
+          createdUnix: new Date(user.created_at).getTime() / 1000,
+          profileUrl: `http://localhost:8082/${user.login || user.username}`,
+        })),
+        total: data.total_count || 0,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return {
+      ok: false,
+      data: {
+        items: [],
         total: 0,
       },
     };

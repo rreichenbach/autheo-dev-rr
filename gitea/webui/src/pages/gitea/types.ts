@@ -25,6 +25,19 @@ export interface GiteaRepo {
   updatedUnix: number;
 }
 
+export interface GiteaUser {
+  id: number;
+  username: string;
+  fullName?: string;
+  avatarUrl: string;
+  location?: string;
+  email?: string;
+  isPrivate: boolean;
+  keepEmailPrivate: boolean;
+  createdUnix: number;
+  profileUrl: string;
+}
+
 export interface SearchParams {
   q?: string;
   sort?: string;
@@ -40,10 +53,10 @@ export interface SearchParams {
   limit?: number;
 }
 
-export interface GiteaApiResponse {
+export interface GiteaApiResponse<T> {
   ok: boolean;
   data: {
-    repos: GiteaRepo[];
+    items: T[];
     total: number;
   };
 }
