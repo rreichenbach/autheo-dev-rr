@@ -14,6 +14,7 @@ import Governance from './pages/Governance'
 import CreateProposal from './pages/CreateProposal'
 import ActiveProposals from './pages/ActiveProposals'
 import ConnectWallet from './pages/ConnectWallet'
+import ExploreRepos from './pages/gitea/explore/repos'
 
 const queryClient = new QueryClient()
 
@@ -60,6 +61,9 @@ const App: React.FC = () => {
                       <Route path="/governance/create" element={<CreateProposal />} />
                       <Route path="/governance/proposals" element={<ActiveProposals />} />
                       <Route path="/connect-wallet" element={<ConnectWallet />} />
+                      
+                      {/* Gitea Routes */}
+                      <Route path="/explore/repos" element={<ExploreRepos />} />
                     </Routes>
                   </div>
                 </main>
