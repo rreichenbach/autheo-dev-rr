@@ -1,4 +1,4 @@
-import { GiteaApiResponse, SearchParams, GiteaRepo, GiteaUser } from './types';
+import { GiteaApiResponse, SearchParams, GiteaRepo, GiteaUser, CodeSearchResult } from './types';
 
 const GITEA_API_URL = 'http://localhost:8082/api/v1';
 
@@ -126,6 +126,74 @@ export const searchUsers = async (params: SearchParams): Promise<GiteaApiRespons
       data: {
         items: [],
         total: 0,
+      },
+    };
+  }
+};
+
+export const searchCode = async (params: SearchParams): Promise<GiteaApiResponse<CodeSearchResult>> => {
+  const searchParams = new URLSearchParams();
+  
+  // Always include page and limit
+  searchParams.append('page', (params.page || 1).toString());
+  searchParams.append('limit', (params.limit || 20).toString());
+  
+  // Add search parameters
+  if (params.q) searchParams.append('q', params.q);
+  if (params.language) searchParams.append('language', params.language);
+  if (params.fuzzy !== undefined) searchParams.append('fuzzy', params.fuzzy ? '1' : '0');
+
+  try {
+    const response = await fetch(`${GITEA_API_URL}/code/search?${searchParams.toString()}`, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    return {
+      ok: true,
+      data: {
+        items: (data.data || []).map((result: any) => ({
+          repoID: result.repository.id,
+          commitID: result.commit_id,
+          filename: result.path,
+          language: result.language,
+          color: result.language_color || '#4F5D95',
+          lines: result.lines.map((line: any) => ({
+            lineNumber: line.line_number,
+            content: line.content,
+            highlighted: line.highlighted || false,
+          })),
+          repo: {
+            id: result.repository.id,
+            name: result.repository.full_name,
+            link: result.repository.html_url,
+            isArchived: result.repository.archived,
+            isPrivate: result.repository.private,
+          },
+        })),
+        total: data.total_count || 0,
+        languages: data.languages?.map((lang: any) => ({
+          language: lang.name,
+          color: lang.color || '#4F5D95',
+          count: lang.count,
+        })) || [],
+      },
+    };
+  } catch (error) {
+    console.error('Error searching code:', error);
+    return {
+      ok: false,
+      data: {
+        items: [],
+        total: 0,
+        languages: [],
       },
     };
   }

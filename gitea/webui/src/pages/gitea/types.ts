@@ -38,6 +38,26 @@ export interface GiteaUser {
   profileUrl: string;
 }
 
+export interface CodeSearchResult {
+  repoID: number;
+  commitID: string;
+  filename: string;
+  language?: string;
+  color?: string;
+  lines: {
+    lineNumber: number;
+    content: string;
+    highlighted: boolean;
+  }[];
+  repo?: GiteaRepo;
+}
+
+export interface CodeLanguageTerm {
+  language: string;
+  color: string;
+  count: number;
+}
+
 export interface SearchParams {
   q?: string;
   sort?: string;
@@ -51,6 +71,7 @@ export interface SearchParams {
   private?: boolean;
   page?: number;
   limit?: number;
+  fuzzy?: boolean;
 }
 
 export interface GiteaApiResponse<T> {
@@ -58,6 +79,7 @@ export interface GiteaApiResponse<T> {
   data: {
     items: T[];
     total: number;
+    languages?: CodeLanguageTerm[];
   };
 }
 
