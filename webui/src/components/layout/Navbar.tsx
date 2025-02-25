@@ -36,6 +36,9 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, setIsDark }) => {
                 <Link to="dna" className="nav-link">
                   DnA
                 </Link>
+                <Link to="defi" className="nav-link">
+                  DeFi
+                </Link>
                 <Link to="hardware" className="nav-link">
                   Hardware
                 </Link>
@@ -107,6 +110,13 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, setIsDark }) => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   DnA
+                </Link>
+                <Link
+                  to="/defi"
+                  className="nav-link py-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  DeFi
                 </Link>
                 <Link
                   to="/hardware"

@@ -50,8 +50,8 @@ const marketplaceItems = [
   { name: 'AI Inference Stake', price: '500 DPT/month', type: 'Staking' }
 ]
 
-// Hero image URL - replace with your actual image path
-const heroImageUrl = '/ai-hero-image.jpg'
+// Hero image URL - using a placeholder image from Unsplash
+const heroImageUrl = 'ai-hero-image.PNG'
 
 const AI: React.FC = () => {
   // State for collapsible sections
@@ -184,8 +184,11 @@ const AI: React.FC = () => {
         
         <div className="relative z-10 p-8">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
-            Power Your AI with Autheo—324 LLM Libraries, 89 RPA Workflows Created. Automate and Innovate on DePAIN. Start Building Now!
+            Power Your AI with Autheo
           </h1>
+          <p className="text-sm text-muted-foreground mb-3">
+          324 LLM Libraries, 89 RPA Workflows Created. Automate and Innovate on DePAIN. Start Building Now!
+              </p>
           <div className="flex flex-col sm:flex-row gap-4 mt-6">
             <Link to="/ai/tools" className="glass-button py-3 px-6 flex items-center justify-center group">
               Explore AI Tools
