@@ -55,7 +55,7 @@ const Home: React.FC = () => {
             <div>
               <h3 className="text-lg font-medium mb-2 text-white">Developer Hub</h3>
               <p className="text-3xl font-bold gradient-text">
-                {stats.repositories.total} Repositories
+                {stats.repositories.total} <span class="text-muted-foreground mt-1">Repositories</span>
               </p>
               <p className="text-muted-foreground mt-1">
                 {stats.repositories.active} active this week
@@ -80,7 +80,7 @@ const Home: React.FC = () => {
             <div>
               <h3 className="text-lg font-medium mb-2 text-white">Artificial Intelligence</h3>
               <p className="text-3xl font-bold gradient-text">
-                {stats.community.developers} LLM Libraries
+                {stats.community.developers} <span class="text-muted-foreground mt-1">LLM Libraries</span>
               </p>
               <p className="text-muted-foreground mt-1">
                 {stats.community.activeContributors} Workflows Created
@@ -105,7 +105,7 @@ const Home: React.FC = () => {
             <div>
               <h3 className="text-lg font-medium mb-2 text-white">DeFi</h3>
               <p className="text-3xl font-bold gradient-text">
-                {stats.governance.activeProposals}
+                {stats.governance.activeProposals} <span class="text-muted-foreground mt-1">Smart Contracts</span>
               </p>
               <p className="text-muted-foreground mt-1">
                 {stats.governance.pendingReviews} NFTs
@@ -130,7 +130,7 @@ const Home: React.FC = () => {
             <div>
               <h3 className="text-lg font-medium mb-2 text-white">Data & Analytics (DnA)</h3>
               <p className="text-3xl font-bold gradient-text">
-                {stats.repositories.total} 
+                {stats.repositories.total} <span class="text-muted-foreground mt-1">Data Pipelines</span>
               </p>
               <p className="text-muted-foreground mt-1">
                 {stats.repositories.active} Oracle Interfaces
@@ -155,7 +155,7 @@ const Home: React.FC = () => {
             <div>
               <h3 className="text-lg font-medium mb-2 text-white">Hardware</h3>
               <p className="text-3xl font-bold gradient-text">
-                {stats.community.developers} DePIN Projects
+                {stats.community.developers} <span class="text-muted-foreground mt-1">DePIN Projects</span>
               </p>
               <p className="text-muted-foreground mt-1">
                 {stats.community.activeContributors} Networks Deployed
@@ -180,7 +180,7 @@ const Home: React.FC = () => {
             <div>
               <h3 className="text-lg font-medium mb-2 text-white">Software</h3>
               <p className="text-3xl font-bold gradient-text">
-                {stats.governance.activeProposals} dApps
+                {stats.governance.activeProposals} <span class="text-muted-foreground mt-1">dApps</span>
               </p>
               <p className="text-muted-foreground mt-1">
                 {stats.governance.pendingReviews} Frameworks

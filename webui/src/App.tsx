@@ -62,8 +62,8 @@ const App: React.FC = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/DevHub" element={<DevHub />} />
                     <Route path="/AI" element={<AI />} />
-                    <Route path="/DnA" element={<DnA />} />
                     <Route path="/DeFi" element={<DeFi />} />
+                    <Route path="/DnA" element={<DnA />} />
                     <Route path="/Hardware" element={<Hardware />} />
                     <Route path="/Software" element={<Software />} />
                     <Route path="/repositories" element={<Repositories />} />
