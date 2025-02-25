@@ -591,7 +591,7 @@ const DeFi: React.FC = () => {
           <Link to="/defi/docs" className="text-white hover:text-primary transition-colors">
             DeFi Documentation
           </Link>
-          <Link to="/defi/community" className="text-white hover:text-primary transition-colors">
+          <Link to="http://localhost:8085/autheo/channels/decentralized-finance" className="text-white hover:text-primary transition-colors">
             Community
           </Link>
           <Link to="/defi/governance" className="text-white hover:text-primary transition-colors">

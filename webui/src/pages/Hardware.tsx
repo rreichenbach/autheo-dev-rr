@@ -591,7 +591,7 @@ const Hardware: React.FC = () => {
           <Link to="/hardware/docs" className="text-white hover:text-primary transition-colors">
             Hardware Documentation
           </Link>
-          <Link to="/hardware/community" className="text-white hover:text-primary transition-colors">
+          <Link to="http://localhost:8085/autheo/channels/hardware" className="text-white hover:text-primary transition-colors">
             Community
           </Link>
           <Link to="/hardware/governance" className="text-white hover:text-primary transition-colors">

@@ -175,7 +175,7 @@ const DevHub: React.FC = () => {
           <p className="text-muted-foreground">13 Topics Created</p>
           <p className="text-muted-foreground mb-4">24 Most Comments</p>
           <Link
-            to="/community/activity"
+            to="http://localhost:8085/autheo/channels/devhub"
             className="glass-button w-full flex items-center justify-center group"
           >
             Participate in the Community

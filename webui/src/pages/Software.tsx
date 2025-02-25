@@ -619,7 +619,7 @@ const Software: React.FC = () => {
           <Link to="/software/docs" className="text-white hover:text-primary transition-colors">
             Software Documentation
           </Link>
-          <Link to="/software/community" className="text-white hover:text-primary transition-colors">
+          <Link to="http://localhost:8085/autheo/channels/software" className="text-white hover:text-primary transition-colors">
             Community
           </Link>
           <Link to="/software/governance" className="text-white hover:text-primary transition-colors">

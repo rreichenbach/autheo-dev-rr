@@ -636,7 +636,7 @@ const DnA: React.FC = () => {
           <Link to="/dna/docs" className="text-white hover:text-primary transition-colors">
             DnA Documentation
           </Link>
-          <Link to="/dna/community" className="text-white hover:text-primary transition-colors">
+          <Link to="http://localhost:8085/autheo/channels/data--analytics" className="text-white hover:text-primary transition-colors">
             Community
           </Link>
           <Link to="/dna/governance" className="text-white hover:text-primary transition-colors">

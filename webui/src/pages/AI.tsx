@@ -561,7 +561,7 @@ const AI: React.FC = () => {
           <Link to="/ai/docs" className="text-white hover:text-primary transition-colors">
             AI Documentation
           </Link>
-          <Link to="/ai/community" className="text-white hover:text-primary transition-colors">
+          <Link to="http://localhost:8085/autheo/channels/artificial-intelligence" className="text-white hover:text-primary transition-colors">
             Community Forum
           </Link>
           <Link to="/ai/governance" className="text-white hover:text-primary transition-colors">
