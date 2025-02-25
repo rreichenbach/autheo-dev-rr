@@ -44,4 +44,12 @@ To add a custom hero image for the DnA page:
    const heroImageUrl = '/dna-hero-image.jpg'
    ```
 
+### Software Page
+To add a custom hero image for the Software page:
+1. Add your image to this directory (e.g., `software-hero-image.jpg`)
+2. Update the `heroImageUrl` in `src/pages/Software.tsx` to point to your image:
+   ```typescript
+   const heroImageUrl = '/software-hero-image.jpg'
+   ```
+
 Currently, all pages are using placeholder images. Replace them with your own images for production use.
