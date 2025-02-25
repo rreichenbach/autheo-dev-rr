@@ -28,4 +28,12 @@ To add a custom hero image for the DeFi page:
    const heroImageUrl = '/defi-hero-image.jpg'
    ```
 
-Currently, both pages are using placeholder images. Replace them with your own images for production use.
+### Hardware Page
+To add a custom hero image for the Hardware page:
+1. Add your image to this directory (e.g., `hardware-hero-image.jpg`)
+2. Update the `heroImageUrl` in `src/pages/Hardware.tsx` to point to your image:
+   ```typescript
+   const heroImageUrl = '/hardware-hero-image.jpg'
+   ```
+
+Currently, all pages are using placeholder images. Replace them with your own images for production use.
