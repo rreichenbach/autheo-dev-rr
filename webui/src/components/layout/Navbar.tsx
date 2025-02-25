@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Menu, Sun, Moon } from 'lucide-react'
 
 interface NavbarProps {
@@ -9,6 +9,15 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ isDark, setIsDark }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
+  const location = useLocation()
+  
+  // Function to check if a link is active
+  const isActive = (path: string) => {
+    // Remove leading slash for comparison
+    const currentPath = location.pathname.toLowerCase().replace(/^\//, '')
+    const linkPath = path.toLowerCase().replace(/^\//, '')
+    return currentPath === linkPath
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
@@ -27,22 +36,40 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, setIsDark }) => {
               
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-6">
-                <Link to="devhub" className="nav-link">
+                <Link
+                  to="devhub"
+                  className={`nav-link ${isActive('devhub') ? 'active-nav-link' : ''}`}
+                >
                   DevHub
                 </Link>
-                <Link to="ai" className="nav-link">
+                <Link
+                  to="ai"
+                  className={`nav-link ${isActive('ai') ? 'active-nav-link' : ''}`}
+                >
                   AI
                 </Link>
-                <Link to="dna" className="nav-link">
+                <Link
+                  to="dna"
+                  className={`nav-link ${isActive('dna') ? 'active-nav-link' : ''}`}
+                >
                   DnA
                 </Link>
-                <Link to="defi" className="nav-link">
+                <Link
+                  to="defi"
+                  className={`nav-link ${isActive('defi') ? 'active-nav-link' : ''}`}
+                >
                   DeFi
                 </Link>
-                <Link to="hardware" className="nav-link">
+                <Link
+                  to="hardware"
+                  className={`nav-link ${isActive('hardware') ? 'active-nav-link' : ''}`}
+                >
                   Hardware
                 </Link>
-                <Link to="software" className="nav-link">
+                <Link
+                  to="software"
+                  className={`nav-link ${isActive('software') ? 'active-nav-link' : ''}`}
+                >
                   Software
                 </Link>
               </div>
@@ -92,42 +119,42 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, setIsDark }) => {
               <div className="flex flex-col space-y-4">
                 <Link
                   to="/devhub"
-                  className="nav-link py-2"
+                  className={`nav-link py-2 ${isActive('devhub') ? 'active-nav-link' : ''}`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   DevHub
                 </Link>
                 <Link
                   to="/ai"
-                  className="nav-link py-2"
+                  className={`nav-link py-2 ${isActive('ai') ? 'active-nav-link' : ''}`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   AI
                 </Link>
                 <Link
                   to="/dna"
-                  className="nav-link py-2"
+                  className={`nav-link py-2 ${isActive('dna') ? 'active-nav-link' : ''}`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   DnA
                 </Link>
                 <Link
                   to="/defi"
-                  className="nav-link py-2"
+                  className={`nav-link py-2 ${isActive('defi') ? 'active-nav-link' : ''}`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   DeFi
                 </Link>
                 <Link
                   to="/hardware"
-                  className="glass-button text-center"
+                  className={`glass-button text-center ${isActive('hardware') ? 'active-glass-button' : ''}`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Hardware
                 </Link>
                 <Link
                   to="/software"
-                  className="glass-button text-center"
+                  className={`glass-button text-center ${isActive('software') ? 'active-glass-button' : ''}`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Software
