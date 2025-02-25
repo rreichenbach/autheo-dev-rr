@@ -36,4 +36,12 @@ To add a custom hero image for the Hardware page:
    const heroImageUrl = '/hardware-hero-image.jpg'
    ```
 
+### DnA Page
+To add a custom hero image for the DnA page:
+1. Add your image to this directory (e.g., `dna-hero-image.jpg`)
+2. Update the `heroImageUrl` in `src/pages/DnA.tsx` to point to your image:
+   ```typescript
+   const heroImageUrl = '/dna-hero-image.jpg'
+   ```
+
 Currently, all pages are using placeholder images. Replace them with your own images for production use.
