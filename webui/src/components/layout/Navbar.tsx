@@ -27,17 +27,20 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, setIsDark }) => {
               
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-6">
-                <Link to="http://localhost:8082/explore/repos" className="nav-link">
-                  Repositories
+                <Link to="devhub" className="nav-link">
+                  DevHub
                 </Link>
-               <Link to="http://localhost:8081/projects" className="nav-link">
-                  Project Management
+                <Link to="ai" className="nav-link">
+                  AI
                 </Link>
-                <Link to="http://localhost:8082/explore/organizations" className="nav-link">
-                  Governance (DAO)
+                <Link to="dna" className="nav-link">
+                  DnA
                 </Link>
-                <Link to="http://localhost:8083/home/workflows" className="nav-link">
-                  Agentic AI Workflows
+                <Link to="hardware" className="nav-link">
+                  Hardware
+                </Link>
+                <Link to="software" className="nav-link">
+                  Software
                 </Link>
               </div>
             </div>
@@ -56,14 +59,6 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, setIsDark }) => {
                   <Moon className="w-5 h-5 text-foreground" />
                 )}
               </button>
-
-              {/* Create Repository button */}
-              <Link
-                to="http://localhost:8082/repo/create"
-                className="hidden md:inline-flex glass-button"
-              >
-                Create Repository
-              </Link>
 
               {/* Connect Wallet button */}
               <Link
@@ -93,32 +88,39 @@ const Navbar: React.FC<NavbarProps> = ({ isDark, setIsDark }) => {
             <div className="container mx-auto px-4 py-4">
               <div className="flex flex-col space-y-4">
                 <Link
-                  to="/repositories"
+                  to="/devhub"
                   className="nav-link py-2"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Repositories
+                  DevHub
                 </Link>
                 <Link
-                  to="/community"
+                  to="/ai"
                   className="nav-link py-2"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Community
+                  AI
                 </Link>
                 <Link
-                  to="/governance"
+                  to="/dna"
                   className="nav-link py-2"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Governance
+                  DnA
                 </Link>
                 <Link
-                  to="/repositories/create"
+                  to="/hardware"
                   className="glass-button text-center"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Create Repository
+                  Hardware
+                </Link>
+                <Link
+                  to="/software"
+                  className="glass-button text-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Software
                 </Link>
               </div>
             </div>

@@ -8,6 +8,12 @@ import '@rainbow-me/rainbowkit/styles.css'
 import { wagmiConfig } from './config/wagmi'
 import Navbar from './components/layout/Navbar'
 import Home from './pages/Home'
+import DevHub from './pages/DevHub'
+import AI from './pages/AI'
+import DnA from './pages/DnA'
+import DeFi from './pages/DeFi'
+import Hardware from './pages/Hardware'
+import Software from './pages/Software'
 import Repositories from './pages/Repositories'
 import Community from './pages/Community'
 import Governance from './pages/Governance'
@@ -53,13 +59,19 @@ const App: React.FC = () => {
                 <main className="container mx-auto px-4 py-8 pt-24">
                   <div className="animate-fade-in">
                     <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/repositories" element={<Repositories />} />
-                      <Route path="/community" element={<Community />} />
-                      <Route path="/governance" element={<Governance />} />
-                      <Route path="/governance/create" element={<CreateProposal />} />
-                      <Route path="/governance/proposals" element={<ActiveProposals />} />
-                      <Route path="/connect-wallet" element={<ConnectWallet />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="/DevHub" element={<DevHub />} />
+                    <Route path="/AI" element={<AI />} />
+                    <Route path="/DnA" element={<DnA />} />
+                    <Route path="/DeFi" element={<DeFi />} />
+                    <Route path="/Hardware" element={<Hardware />} />
+                    <Route path="/Software" element={<Software />} />
+                    <Route path="/repositories" element={<Repositories />} />
+                    <Route path="/community" element={<Community />} />
+                    <Route path="/governance" element={<Governance />} />
+                    <Route path="/governance/create" element={<CreateProposal />} />
+                    <Route path="/governance/proposals" element={<ActiveProposals />} />
+                    <Route path="/connect-wallet" element={<ConnectWallet />} />
                     </Routes>
                   </div>
                 </main>

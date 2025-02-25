@@ -45,17 +45,17 @@ const recentActivity = [
   }
 ]
 
-const Home: React.FC = () => {
+const Hardware: React.FC = () => {
   return (
     <div className="space-y-8 animate-fade-in">
-      {/* Project Statistics - All 6 cards in a responsive grid */}
+      {/* Project Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="stats-card glow-effect">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-lg font-medium mb-2 text-white">Developer Hub</h3>
+              <h3 className="text-lg font-medium mb-2 text-white">Total Repositories</h3>
               <p className="text-3xl font-bold gradient-text">
-                {stats.repositories.total} Repositories
+                {stats.repositories.total}
               </p>
               <p className="text-muted-foreground mt-1">
                 {stats.repositories.active} active this week
@@ -67,10 +67,10 @@ const Home: React.FC = () => {
             <GitBranch className="w-6 h-6 text-primary/60" />
           </div>
           <Link
-            to="http://localhost:8084/explore/repos"
+            to="/repositories"
             className="glass-button mt-4 w-full flex items-center justify-center group"
           >
-            Manage on Autheo
+            View Details
             <span className="ml-2 transform transition-transform group-hover:translate-x-1">→</span>
           </Link>
         </div>
@@ -78,24 +78,24 @@ const Home: React.FC = () => {
         <div className="stats-card glow-effect">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-lg font-medium mb-2 text-white">Artificial Intelligence</h3>
+              <h3 className="text-lg font-medium mb-2 text-white">Community</h3>
               <p className="text-3xl font-bold gradient-text">
-                {stats.community.developers} LLM Libraries
+                {stats.community.developers}
               </p>
               <p className="text-muted-foreground mt-1">
-                {stats.community.activeContributors} Workflows Created
+                {stats.community.activeContributors} active contributors
               </p>
               <p className="text-muted-foreground">
-                {stats.community.coreMembers} RPA Processes
+                {stats.community.coreMembers} core members
               </p>
             </div>
             <Users className="w-6 h-6 text-primary/60" />
           </div>
           <Link
-            to="/ai"
+            to="/community"
             className="glass-button mt-4 w-full flex items-center justify-center group"
           >
-            Automate on Autheo
+            View Members
             <span className="ml-2 transform transition-transform group-hover:translate-x-1">→</span>
           </Link>
         </div>
@@ -103,99 +103,24 @@ const Home: React.FC = () => {
         <div className="stats-card glow-effect">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="text-lg font-medium mb-2 text-white">DeFi</h3>
+              <h3 className="text-lg font-medium mb-2 text-white">Governance</h3>
               <p className="text-3xl font-bold gradient-text">
                 {stats.governance.activeProposals}
               </p>
               <p className="text-muted-foreground mt-1">
-                {stats.governance.pendingReviews} NFTs
+                {stats.governance.pendingReviews} pending reviews
               </p>
               <p className="text-muted-foreground">
-                {stats.governance.participation} Staked
+                {stats.governance.participation} participation
               </p>
             </div>
             <Activity className="w-6 h-6 text-primary/60" />
           </div>
           <Link
-            to="/defi"
+            to="/governance"
             className="glass-button mt-4 w-full flex items-center justify-center group"
           >
-            Monetize on Autheo
-            <span className="ml-2 transform transition-transform group-hover:translate-x-1">→</span>
-          </Link>
-        </div>
-
-        <div className="stats-card glow-effect">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="text-lg font-medium mb-2 text-white">Data & Analytics (DnA)</h3>
-              <p className="text-3xl font-bold gradient-text">
-                {stats.repositories.total} 
-              </p>
-              <p className="text-muted-foreground mt-1">
-                {stats.repositories.active} Oracle Interfaces
-              </p>
-              <p className="text-muted-foreground">
-                {stats.repositories.new} Pipelines
-              </p>
-            </div>
-            <GitBranch className="w-6 h-6 text-primary/60" />
-          </div>
-          <Link
-            to="/dna"
-            className="glass-button mt-4 w-full flex items-center justify-center group"
-          >
-            Analyze on Autheo
-            <span className="ml-2 transform transition-transform group-hover:translate-x-1">→</span>
-          </Link>
-        </div>
-
-        <div className="stats-card glow-effect">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="text-lg font-medium mb-2 text-white">Hardware</h3>
-              <p className="text-3xl font-bold gradient-text">
-                {stats.community.developers} DePIN Projects
-              </p>
-              <p className="text-muted-foreground mt-1">
-                {stats.community.activeContributors} Networks Deployed
-              </p>
-              <p className="text-muted-foreground">
-                {stats.community.coreMembers} Secured Enclaves
-              </p>
-            </div>
-            <Users className="w-6 h-6 text-primary/60" />
-          </div>
-          <Link
-            to="/hardware"
-            className="glass-button mt-4 w-full flex items-center justify-center group"
-          >
-            Deploy on Autheo
-            <span className="ml-2 transform transition-transform group-hover:translate-x-1">→</span>
-          </Link>
-        </div>
-
-        <div className="stats-card glow-effect">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="text-lg font-medium mb-2 text-white">Software</h3>
-              <p className="text-3xl font-bold gradient-text">
-                {stats.governance.activeProposals} dApps
-              </p>
-              <p className="text-muted-foreground mt-1">
-                {stats.governance.pendingReviews} Frameworks
-              </p>
-              <p className="text-muted-foreground">
-                {stats.governance.participation} Toolkits and SDKs
-              </p>
-            </div>
-            <Activity className="w-6 h-6 text-primary/60" />
-          </div>
-          <Link
-            to="/software"
-            className="glass-button mt-4 w-full flex items-center justify-center group"
-          >
-            Build on Autheo
+            View Proposals
             <span className="ml-2 transform transition-transform group-hover:translate-x-1">→</span>
           </Link>
         </div>
@@ -278,4 +203,4 @@ const Home: React.FC = () => {
   )
 }
 
-export default Home
+export default Hardware
