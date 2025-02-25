@@ -1,0 +1,84 @@
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: mattermost-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=mmuser
+      - POSTGRES_PASSWORD=mmuser_password
+      - POSTGRES_DB=mattermost
+    ports:
+      - "5433:5432" # Using port 5433 to avoid conflicts with existing PostgreSQL
+    volumes:
+      - mattermost-postgres:/var/lib/postgresql/data
+    networks:
+      - mattermost-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "mmuser", "-d", "mattermost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mattermost:
+    image: mattermost/mattermost-team-edition:latest
+    container_name: mattermost
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      # Database settings
+      - MM_SQLSETTINGS_DRIVERNAME=postgres
+      - MM_SQLSETTINGS_DATASOURCE=postgres://mmuser:mmuser_password@postgres:5432/mattermost?sslmode=disable
+      
+      # Server settings
+      - MM_SERVICESETTINGS_SITEURL=http://localhost:8085
+      - MM_SERVICESETTINGS_LISTENADDRESS=:8000
+      
+      # SMTP settings (optional - configure if you want email notifications)
+      # - MM_EMAILSETTINGS_SMTPSERVER=mail.example.com
+      # - MM_EMAILSETTINGS_SMTPPORT=587
+      # - MM_EMAILSETTINGS_SMTPUSERNAME=your-username
+      # - MM_EMAILSETTINGS_SMTPPASSWORD=your-password
+      # - MM_EMAILSETTINGS_CONNECTIONSECURITY=TLS
+      # - MM_EMAILSETTINGS_FEEDBACKEMAIL=mattermost@example.com
+      # - MM_EMAILSETTINGS_REPLYTOADDRESS=mattermost@example.com
+      # - MM_EMAILSETTINGS_SENDEMAILNOTIFICATIONS=true
+      
+      # File storage settings
+      - MM_FILESETTINGS_DRIVERNAME=local
+      - MM_FILESETTINGS_DIRECTORY=/mattermost/data
+      
+      # Log settings
+      - MM_LOGSETTINGS_ENABLECONSOLE=true
+      - MM_LOGSETTINGS_CONSOLELEVEL=INFO
+      - MM_LOGSETTINGS_ENABLEFILE=true
+      - MM_LOGSETTINGS_FILELEVEL=INFO
+      - MM_LOGSETTINGS_FILEFORMAT=json
+      
+      # Plugin settings
+      - MM_PLUGINSETTINGS_ENABLE=true
+      - MM_PLUGINSETTINGS_DIRECTORY=/mattermost/plugins
+      - MM_PLUGINSETTINGS_CLIENTDIRECTORY=/mattermost/client/plugins
+    ports:
+      - "8085:8000" # Using port 8085 to avoid conflicts with other services
+    volumes:
+      - mattermost-data:/mattermost/data
+      - mattermost-logs:/mattermost/logs
+      - mattermost-config:/mattermost/config
+      - mattermost-plugins:/mattermost/plugins
+      - mattermost-client-plugins:/mattermost/client/plugins
+    networks:
+      - mattermost-network
+
+volumes:
+  mattermost-postgres:
+  mattermost-data:
+  mattermost-logs:
+  mattermost-config:
+  mattermost-plugins:
+  mattermost-client-plugins:
+
+networks:
+  mattermost-network:
+    name: mattermost-network
+    driver: bridge
