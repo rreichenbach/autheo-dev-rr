@@ -10,8 +10,9 @@ For example:
 - An image placed at `public/ai-hero-image.jpg` will be accessible at `/ai-hero-image.jpg`
 - A font placed at `public/fonts/custom-font.woff2` will be accessible at `/fonts/custom-font.woff2`
 
-## Hero Image for AI Page
+## Hero Images for Pages
 
+### AI Page
 To add a custom hero image for the AI page:
 1. Add your image to this directory (e.g., `ai-hero-image.jpg`)
 2. Update the `heroImageUrl` in `src/pages/AI.tsx` to point to your image:
@@ -19,4 +20,12 @@ To add a custom hero image for the AI page:
    const heroImageUrl = '/ai-hero-image.jpg'
    ```
 
-Currently, the AI page is using a placeholder image from Unsplash. Replace it with your own image for production use.
+### DeFi Page
+To add a custom hero image for the DeFi page:
+1. Add your image to this directory (e.g., `defi-hero-image.jpg`)
+2. Update the `heroImageUrl` in `src/pages/DeFi.tsx` to point to your image:
+   ```typescript
+   const heroImageUrl = '/defi-hero-image.jpg'
+   ```
+
+Currently, both pages are using placeholder images. Replace them with your own images for production use.
