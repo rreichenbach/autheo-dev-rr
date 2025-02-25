@@ -93,3 +93,54 @@ export interface SortOption {
   value: string;
   label: string;
 }
+
+export interface CreateRepoParams {
+  uid: number;
+  repoName: string;
+  private: boolean;
+  description?: string;
+  repoTemplate?: string;
+  gitContent?: boolean;
+  gitHooks?: boolean;
+  webhooks?: boolean;
+  topics?: boolean;
+  avatar?: boolean;
+  labels?: boolean;
+  protectedBranch?: boolean;
+  issueLabels?: string;
+  gitignores?: string[];
+  license?: string;
+  readme?: string;
+  autoInit?: boolean;
+  defaultBranch?: string;
+  objectFormatName?: string;
+  isTemplate?: boolean;
+}
+
+export interface RepoTemplate {
+  id: number;
+  name: string;
+  owner: string;
+  description?: string;
+}
+
+export interface LabelTemplate {
+  displayName: string;
+  description: string;
+}
+
+export interface RepoCreationLimits {
+  canCreateRepo: boolean;
+  maxCreationLimit: number;
+  isForcedPrivate: boolean;
+}
+
+export interface RepoCreationOptions {
+  gitignores: string[];
+  licenses: string[];
+  readmes: string[];
+  templates: RepoTemplate[];
+  labelTemplates: LabelTemplate[];
+  supportedObjectFormats: { name: string }[];
+  defaultObjectFormat: { name: string };
+}

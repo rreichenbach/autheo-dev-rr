@@ -1,4 +1,13 @@
-import { GiteaApiResponse, SearchParams, GiteaRepo, GiteaUser, CodeSearchResult } from './types';
+import { 
+  GiteaApiResponse, 
+  SearchParams, 
+  GiteaRepo, 
+  GiteaUser, 
+  CodeSearchResult,
+  CreateRepoParams,
+  RepoCreationOptions,
+  RepoCreationLimits 
+} from './types';
 
 const GITEA_API_URL = 'http://localhost:8082/api/v1';
 
@@ -196,5 +205,136 @@ export const searchCode = async (params: SearchParams): Promise<GiteaApiResponse
         languages: [],
       },
     };
+  }
+};
+
+export const getRepoCreationOptions = async (): Promise<RepoCreationOptions> => {
+  try {
+    const response = await fetch(`${GITEA_API_URL}/repos/creation/options`, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return {
+      gitignores: data.gitignores || [],
+      licenses: data.licenses || [],
+      readmes: data.readmes || [],
+      templates: data.templates || [],
+      labelTemplates: data.label_templates || [],
+      supportedObjectFormats: data.supported_object_formats || [],
+      defaultObjectFormat: data.default_object_format || { name: 'sha1' },
+    };
+  } catch (error) {
+    console.error('Error fetching repo creation options:', error);
+    return {
+      gitignores: [],
+      licenses: [],
+      readmes: [],
+      templates: [],
+      labelTemplates: [],
+      supportedObjectFormats: [{ name: 'sha1' }],
+      defaultObjectFormat: { name: 'sha1' },
+    };
+  }
+};
+
+export const getRepoCreationLimits = async (): Promise<RepoCreationLimits> => {
+  try {
+    const response = await fetch(`${GITEA_API_URL}/repos/creation/limits`, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return {
+      canCreateRepo: data.can_create_repo || false,
+      maxCreationLimit: data.max_creation_limit || 0,
+      isForcedPrivate: data.is_forced_private || false,
+    };
+  } catch (error) {
+    console.error('Error fetching repo creation limits:', error);
+    return {
+      canCreateRepo: false,
+      maxCreationLimit: 0,
+      isForcedPrivate: true,
+    };
+  }
+};
+
+export const createRepository = async (params: CreateRepoParams): Promise<GiteaRepo> => {
+  try {
+    const response = await fetch(`${GITEA_API_URL}/repos`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        owner_id: params.uid,
+        name: params.repoName,
+        private: params.private,
+        description: params.description,
+        template: params.repoTemplate,
+        git_content: params.gitContent,
+        git_hooks: params.gitHooks,
+        webhooks: params.webhooks,
+        topics: params.topics,
+        avatar: params.avatar,
+        labels: params.labels,
+        protected_branch: params.protectedBranch,
+        issue_labels: params.issueLabels,
+        gitignores: params.gitignores?.join(','),
+        license: params.license,
+        readme: params.readme,
+        auto_init: params.autoInit,
+        default_branch: params.defaultBranch,
+        object_format_name: params.objectFormatName,
+        is_template: params.isTemplate,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || `HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return {
+      id: data.id,
+      name: data.name,
+      owner: {
+        name: data.owner.login || data.owner.username,
+        homeLink: `http://localhost:8082/${data.owner.login || data.owner.username}`,
+        visibility: {
+          isPrivate: data.private
+        }
+      },
+      link: data.html_url,
+      description: data.description || '',
+      descriptionHTML: data.description || '',
+      isArchived: data.archived || false,
+      isPrivate: data.private || false,
+      isTemplate: data.is_template || false,
+      objectFormatName: data.default_branch || 'main',
+      primaryLanguage: null,
+      numStars: 0,
+      numForks: 0,
+      topics: data.topics || [],
+      updatedUnix: new Date(data.updated_at).getTime() / 1000,
+    };
+  } catch (error) {
+    console.error('Error creating repository:', error);
+    throw error;
   }
 };

@@ -17,6 +17,7 @@ import ConnectWallet from './pages/ConnectWallet'
 import ExploreRepos from './pages/gitea/explore/repos'
 import ExploreUsers from './pages/gitea/explore/users'
 import ExploreCode from './pages/gitea/explore/code'
+import CreateRepository from './pages/gitea/repo/create'
 
 const queryClient = new QueryClient()
 
@@ -68,6 +69,7 @@ const App: React.FC = () => {
                       <Route path="/explore/repos" element={<ExploreRepos />} />
                       <Route path="/explore/users" element={<ExploreUsers />} />
                       <Route path="/explore/code" element={<ExploreCode />} />
+                      <Route path="/repo/create" element={<CreateRepository />} />
                     </Routes>
                   </div>
                 </main>
