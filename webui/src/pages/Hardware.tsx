@@ -64,6 +64,8 @@ const Hardware: React.FC = () => {
   const [dashboardExpanded, setDashboardExpanded] = React.useState(false)
   const [toolsExpanded, setToolsExpanded] = React.useState(false)
   const [marketplaceExpanded, setMarketplaceExpanded] = React.useState(false)
+  const [nodesExpanded, setNodesExpanded] = React.useState(false)
+  const [meshesExpanded, setMeshesExpanded] = React.useState(false)
   
   // State for search modal
   const [searchQuery, setSearchQuery] = React.useState('')
@@ -220,50 +222,82 @@ const Hardware: React.FC = () => {
               <Search className="w-5 h-5 text-primary/60" />
             </div>
             
-            {/* Featured Items */}
+            {/* Featured Items - Collapsible */}
             <div>
-              <div className="flex items-center mb-3">
-                <HardDrive className="w-4 h-4 text-primary/60 mr-2" />
-                <h3 className="text-md font-medium text-white">Top DePAIN Nodes</h3>
-              </div>
-              <div className="space-y-3 mb-4">
-                {depainNodes.map((node, index) => (
-                  <div key={index} className="activity-item group">
-                    <Cpu className="w-4 h-4 text-primary/60" />
-                    <div className="flex-1">
-                      <p className="font-medium text-white">{node.name}</p>
-                      <p className="text-sm text-muted-foreground">{node.specs}</p>
-                    </div>
-                    <Link
-                      to="#"
-                      className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
-                    >
-                      →
-                    </Link>
+              {/* DePAIN Nodes - Collapsible */}
+              <div className="mb-4">
+                <button
+                  className="w-full flex items-center justify-between mb-3"
+                  onClick={() => setNodesExpanded(!nodesExpanded)}
+                >
+                  <div className="flex items-center">
+                    <HardDrive className="w-4 h-4 text-primary/60 mr-2" />
+                    <h3 className="text-md font-medium text-white">Top DePAIN Nodes</h3>
                   </div>
-                ))}
+                  {nodesExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-primary/60" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-primary/60" />
+                  )}
+                </button>
+                
+                {nodesExpanded && (
+                  <div className="space-y-3 mb-4">
+                    {depainNodes.map((node, index) => (
+                      <div key={index} className="activity-item group">
+                        <Cpu className="w-4 h-4 text-primary/60" />
+                        <div className="flex-1">
+                          <p className="font-medium text-white">{node.name}</p>
+                          <p className="text-sm text-muted-foreground">{node.specs}</p>
+                        </div>
+                        <Link
+                          to="#"
+                          className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
+                        >
+                          →
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               
-              <div className="flex items-center mb-3">
-                <Wifi className="w-4 h-4 text-primary/60 mr-2" />
-                <h3 className="text-md font-medium text-white">Popular Mesh Networks</h3>
-              </div>
-              <div className="space-y-3">
-                {meshNetworks.map((network, index) => (
-                  <div key={index} className="activity-item group">
-                    <Network className="w-4 h-4 text-primary/60" />
-                    <div className="flex-1">
-                      <p className="font-medium text-white">{network.name}</p>
-                      <p className="text-sm text-muted-foreground">{network.nodes} nodes • {network.type}</p>
-                    </div>
-                    <Link
-                      to="#"
-                      className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
-                    >
-                      →
-                    </Link>
+              {/* Mesh Networks - Collapsible */}
+              <div>
+                <button
+                  className="w-full flex items-center justify-between mb-3"
+                  onClick={() => setMeshesExpanded(!meshesExpanded)}
+                >
+                  <div className="flex items-center">
+                    <Wifi className="w-4 h-4 text-primary/60 mr-2" />
+                    <h3 className="text-md font-medium text-white">Popular Mesh Networks</h3>
                   </div>
-                ))}
+                  {meshesExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-primary/60" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-primary/60" />
+                  )}
+                </button>
+                
+                {meshesExpanded && (
+                  <div className="space-y-3">
+                    {meshNetworks.map((network, index) => (
+                      <div key={index} className="activity-item group">
+                        <Network className="w-4 h-4 text-primary/60" />
+                        <div className="flex-1">
+                          <p className="font-medium text-white">{network.name}</p>
+                          <p className="text-sm text-muted-foreground">{network.nodes} nodes • {network.type}</p>
+                        </div>
+                        <Link
+                          to="#"
+                          className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
+                        >
+                          →
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

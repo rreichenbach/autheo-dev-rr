@@ -64,6 +64,8 @@ const DeFi: React.FC = () => {
   const [dashboardExpanded, setDashboardExpanded] = React.useState(false)
   const [toolsExpanded, setToolsExpanded] = React.useState(false)
   const [marketplaceExpanded, setMarketplaceExpanded] = React.useState(false)
+  const [stakingExpanded, setStakingExpanded] = React.useState(false)
+  const [nftsExpanded, setNftsExpanded] = React.useState(false)
   
   // State for search modal
   const [searchQuery, setSearchQuery] = React.useState('')
@@ -220,50 +222,82 @@ const DeFi: React.FC = () => {
               <Search className="w-5 h-5 text-primary/60" />
             </div>
             
-            {/* Featured Items */}
+            {/* Featured Items - Collapsible */}
             <div>
-              <div className="flex items-center mb-3">
-                <Coins className="w-4 h-4 text-primary/60 mr-2" />
-                <h3 className="text-md font-medium text-white">Top Staking Pools</h3>
-              </div>
-              <div className="space-y-3 mb-4">
-                {stakingPools.map((pool, index) => (
-                  <div key={index} className="activity-item group">
-                    <Coins className="w-4 h-4 text-primary/60" />
-                    <div className="flex-1">
-                      <p className="font-medium text-white">{pool.name}</p>
-                      <p className="text-sm text-muted-foreground">APY: {pool.apy}</p>
-                    </div>
-                    <Link
-                      to="#"
-                      className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
-                    >
-                      →
-                    </Link>
+              {/* Staking Pools - Collapsible */}
+              <div className="mb-4">
+                <button
+                  className="w-full flex items-center justify-between mb-3"
+                  onClick={() => setStakingExpanded(!stakingExpanded)}
+                >
+                  <div className="flex items-center">
+                    <Coins className="w-4 h-4 text-primary/60 mr-2" />
+                    <h3 className="text-md font-medium text-white">Top Staking Pools</h3>
                   </div>
-                ))}
+                  {stakingExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-primary/60" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-primary/60" />
+                  )}
+                </button>
+                
+                {stakingExpanded && (
+                  <div className="space-y-3 mb-4">
+                    {stakingPools.map((pool, index) => (
+                      <div key={index} className="activity-item group">
+                        <Coins className="w-4 h-4 text-primary/60" />
+                        <div className="flex-1">
+                          <p className="font-medium text-white">{pool.name}</p>
+                          <p className="text-sm text-muted-foreground">APY: {pool.apy}</p>
+                        </div>
+                        <Link
+                          to="#"
+                          className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
+                        >
+                          →
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               
-              <div className="flex items-center mb-3">
-                <DollarSign className="w-4 h-4 text-primary/60 mr-2" />
-                <h3 className="text-md font-medium text-white">High-Yield NFTs on Autheo</h3>
-              </div>
-              <div className="space-y-3">
-                {nftItems.map((nft, index) => (
-                  <div key={index} className="activity-item group">
-                    <FileCode className="w-4 h-4 text-primary/60" />
-                    <div className="flex-1">
-                      <p className="font-medium text-white">{nft.name}</p>
-                      <p className="text-sm text-muted-foreground">Value: {nft.value}</p>
-                    </div>
-                    <Link
-                      to="#"
-                      className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
-                    >
-                      →
-                    </Link>
+              {/* NFTs - Collapsible */}
+              <div>
+                <button
+                  className="w-full flex items-center justify-between mb-3"
+                  onClick={() => setNftsExpanded(!nftsExpanded)}
+                >
+                  <div className="flex items-center">
+                    <DollarSign className="w-4 h-4 text-primary/60 mr-2" />
+                    <h3 className="text-md font-medium text-white">High-Yield NFTs on Autheo</h3>
                   </div>
-                ))}
+                  {nftsExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-primary/60" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-primary/60" />
+                  )}
+                </button>
+                
+                {nftsExpanded && (
+                  <div className="space-y-3">
+                    {nftItems.map((nft, index) => (
+                      <div key={index} className="activity-item group">
+                        <FileCode className="w-4 h-4 text-primary/60" />
+                        <div className="flex-1">
+                          <p className="font-medium text-white">{nft.name}</p>
+                          <p className="text-sm text-muted-foreground">Value: {nft.value}</p>
+                        </div>
+                        <Link
+                          to="#"
+                          className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
+                        >
+                          →
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

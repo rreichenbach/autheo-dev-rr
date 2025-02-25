@@ -59,6 +59,9 @@ const AI: React.FC = () => {
   const [guidesExpanded, setGuidesExpanded] = React.useState(false)
   const [dashboardExpanded, setDashboardExpanded] = React.useState(false)
   const [toolsExpanded, setToolsExpanded] = React.useState(false)
+  const [llmsExpanded, setLlmsExpanded] = React.useState(false)
+  const [rpaExpanded, setRpaExpanded] = React.useState(false)
+  const [marketplaceExpanded, setMarketplaceExpanded] = React.useState(false)
   
   // State for search modal
   const [searchQuery, setSearchQuery] = React.useState('')
@@ -212,50 +215,82 @@ const AI: React.FC = () => {
               <Search className="w-5 h-5 text-primary/60" />
             </div>
             
-            {/* Featured Items */}
+            {/* Featured Items - Collapsible */}
             <div>
-              <div className="flex items-center mb-3">
-                <Star className="w-4 h-4 text-primary/60 mr-2" />
-                <h3 className="text-md font-medium text-white">Top LLMs</h3>
-              </div>
-              <div className="space-y-3 mb-4">
-                {featuredLLMs.map((llm, index) => (
-                  <div key={index} className="activity-item group">
-                    <Cpu className="w-4 h-4 text-primary/60" />
-                    <div className="flex-1">
-                      <p className="font-medium text-white">{llm.name}</p>
-                      <p className="text-sm text-muted-foreground">{llm.stars} stars</p>
-                    </div>
-                    <Link
-                      to="#"
-                      className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
-                    >
-                      →
-                    </Link>
+              {/* Top LLMs - Collapsible */}
+              <div className="mb-4">
+                <button
+                  className="w-full flex items-center justify-between mb-3"
+                  onClick={() => setLlmsExpanded(!llmsExpanded)}
+                >
+                  <div className="flex items-center">
+                    <Star className="w-4 h-4 text-primary/60 mr-2" />
+                    <h3 className="text-md font-medium text-white">Top LLMs</h3>
                   </div>
-                ))}
+                  {llmsExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-primary/60" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-primary/60" />
+                  )}
+                </button>
+                
+                {llmsExpanded && (
+                  <div className="space-y-3 mb-4">
+                    {featuredLLMs.map((llm, index) => (
+                      <div key={index} className="activity-item group">
+                        <Cpu className="w-4 h-4 text-primary/60" />
+                        <div className="flex-1">
+                          <p className="font-medium text-white">{llm.name}</p>
+                          <p className="text-sm text-muted-foreground">{llm.stars} stars</p>
+                        </div>
+                        <Link
+                          to="#"
+                          className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
+                        >
+                          →
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               
-              <div className="flex items-center mb-3">
-                <Bot className="w-4 h-4 text-primary/60 mr-2" />
-                <h3 className="text-md font-medium text-white">Popular RPA Workflows</h3>
-              </div>
-              <div className="space-y-3">
-                {popularRPA.map((rpa, index) => (
-                  <div key={index} className="activity-item group">
-                    <FileCode className="w-4 h-4 text-primary/60" />
-                    <div className="flex-1">
-                      <p className="font-medium text-white">{rpa.name}</p>
-                      <p className="text-sm text-muted-foreground">{rpa.downloads} downloads</p>
-                    </div>
-                    <Link
-                      to="#"
-                      className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
-                    >
-                      →
-                    </Link>
+              {/* RPA Workflows - Collapsible */}
+              <div>
+                <button
+                  className="w-full flex items-center justify-between mb-3"
+                  onClick={() => setRpaExpanded(!rpaExpanded)}
+                >
+                  <div className="flex items-center">
+                    <Bot className="w-4 h-4 text-primary/60 mr-2" />
+                    <h3 className="text-md font-medium text-white">Popular RPA Workflows</h3>
                   </div>
-                ))}
+                  {rpaExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-primary/60" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-primary/60" />
+                  )}
+                </button>
+                
+                {rpaExpanded && (
+                  <div className="space-y-3">
+                    {popularRPA.map((rpa, index) => (
+                      <div key={index} className="activity-item group">
+                        <FileCode className="w-4 h-4 text-primary/60" />
+                        <div className="flex-1">
+                          <p className="font-medium text-white">{rpa.name}</p>
+                          <p className="text-sm text-muted-foreground">{rpa.downloads} downloads</p>
+                        </div>
+                        <Link
+                          to="#"
+                          className="text-primary hover:text-primary/80 transform transition-transform group-hover:translate-x-1"
+                        >
+                          →
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -415,33 +450,46 @@ const AI: React.FC = () => {
               <ShoppingCart className="w-5 h-5 text-primary/60" />
             </div>
             
-            {/* Marketplace */}
+            {/* Marketplace - Collapsible */}
             <div className="mb-6">
-              <div className="flex items-center mb-3">
-                <ShoppingCart className="w-4 h-4 text-primary/60 mr-2" />
-                <h3 className="text-md font-medium text-white">Marketplace</h3>
-              </div>
+              <button
+                className="w-full flex items-center justify-between mb-3"
+                onClick={() => setMarketplaceExpanded(!marketplaceExpanded)}
+              >
+                <div className="flex items-center">
+                  <ShoppingCart className="w-4 h-4 text-primary/60 mr-2" />
+                  <h3 className="text-md font-medium text-white">Marketplace</h3>
+                </div>
+                {marketplaceExpanded ? (
+                  <ChevronUp className="w-4 h-4 text-primary/60" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-primary/60" />
+                )}
+              </button>
+              
               <p className="text-sm text-muted-foreground mb-3">
                 License AI models, buy RPA templates, or stake DPT for AI inference.
               </p>
               
-              <div className="space-y-4 mb-6">
-                {marketplaceItems.map((item, index) => (
-                  <div key={index} className="glass-card p-4 border border-border/30">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="text-white font-medium">{item.name}</h4>
-                        <p className="text-sm text-muted-foreground">{item.type}</p>
+              {marketplaceExpanded && (
+                <div className="space-y-4 mb-6">
+                  {marketplaceItems.map((item, index) => (
+                    <div key={index} className="glass-card p-4 border border-border/30">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="text-white font-medium">{item.name}</h4>
+                          <p className="text-sm text-muted-foreground">{item.type}</p>
+                        </div>
+                        <span className="text-primary font-medium">{item.price}</span>
                       </div>
-                      <span className="text-primary font-medium">{item.price}</span>
+                      <button className="glass-button mt-3 w-full flex items-center justify-center group text-sm py-1.5">
+                        Purchase
+                        <span className="ml-2 transform transition-transform group-hover:translate-x-1">→</span>
+                      </button>
                     </div>
-                    <button className="glass-button mt-3 w-full flex items-center justify-center group text-sm py-1.5">
-                      Purchase
-                      <span className="ml-2 transform transition-transform group-hover:translate-x-1">→</span>
-                    </button>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
             
             {/* Dashboard Features - Collapsible */}
