@@ -181,6 +181,151 @@ services:
         condition: service_healthy
     networks:
       - autheo-devhub
+      
+  # Flowise - AI workflow automation
+  flowise:
+    image: flowiseai/flowise:latest
+    container_name: autheo-devhub-flowise
+    restart: unless-stopped
+    ports:
+      - "13000:13000"
+    environment:
+      - PORT=13000
+      - HOST=0.0.0.0
+      - FLOWISE_USERNAME=admin
+      - FLOWISE_PASSWORD=password
+      - DATABASE_PATH=/root/.flowise
+      - APIKEY_PATH=/root/.flowise
+      - SECRETKEY_PATH=/root/.flowise
+      - LOG_PATH=/root/.flowise/logs
+      # Vector database connection variables
+      - MILVUS_URL=milvus:19530
+      - QDRANT_URL=http://qdrant:6333
+      - REDIS_URL=redis://flowise-redis:6379
+      - ELASTICSEARCH_URL=http://flowise-elasticsearch:9200
+      - CHROMA_URL=http://chroma:8000
+    volumes:
+      - flowise-data:/root/.flowise
+    networks:
+      - autheo-devhub
+    depends_on:
+      - milvus
+      - qdrant
+      - flowise-redis
+      - flowise-elasticsearch
+      - chroma
+
+  # Milvus vector database for Flowise
+  milvus:
+    image: milvusdb/milvus:v2.3.3
+    container_name: autheo-devhub-milvus
+    restart: unless-stopped
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    environment:
+      - ETCD_ENDPOINTS=etcd:2379
+      - MINIO_ADDRESS=minio:9000
+    volumes:
+      - milvus-data:/var/lib/milvus/data
+      - milvus-conf:/var/lib/milvus/conf
+      - milvus-logs:/var/lib/milvus/logs
+    networks:
+      - autheo-devhub
+    depends_on:
+      - etcd
+      - minio
+    command: ["milvus", "run", "standalone"]
+
+  # Etcd for Milvus
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: autheo-devhub-etcd
+    restart: unless-stopped
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    volumes:
+      - etcd-data:/etcd
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    networks:
+      - autheo-devhub
+
+  # MinIO for Milvus
+  minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    container_name: autheo-devhub-minio
+    restart: unless-stopped
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    volumes:
+      - minio-data:/minio_data
+    command: minio server /minio_data
+    networks:
+      - autheo-devhub
+
+  # Qdrant vector database for Flowise
+  qdrant:
+    image: qdrant/qdrant:v1.6.1
+    container_name: autheo-devhub-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    networks:
+      - autheo-devhub
+
+  # Redis for Flowise
+  flowise-redis:
+    image: redis:7.2
+    container_name: autheo-devhub-flowise-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - flowise-redis-data:/data
+    command: redis-server --save 60 1 --loglevel warning
+    networks:
+      - autheo-devhub
+
+  # Elasticsearch for Flowise
+  flowise-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: autheo-devhub-flowise-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - flowise-elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - autheo-devhub
+
+  # Chroma vector database for Flowise
+  chroma:
+    image: chromadb/chroma:0.4.22
+    container_name: autheo-devhub-chroma
+    restart: unless-stopped
+    environment:
+      - ALLOW_RESET=true
+      - CHROMA_SERVER_AUTH_CREDENTIALS_FILE=
+      - CHROMA_SERVER_AUTH_CREDENTIALS=admin:admin
+      - CHROMA_SERVER_AUTH_PROVIDER=basic
+    volumes:
+      - chroma-data:/chroma/chroma
+    ports:
+      - "8000:8000"
+    networks:
+      - autheo-devhub
 
 volumes:
   postgres_data:
@@ -199,6 +344,27 @@ volumes:
     name: autheo-devhub-mattermost-plugins
   mattermost-client-plugins:
     name: autheo-devhub-mattermost-client-plugins
+  # Flowise volumes
+  flowise-data:
+    name: autheo-devhub-flowise-data
+  milvus-data:
+    name: autheo-devhub-milvus-data
+  milvus-conf:
+    name: autheo-devhub-milvus-conf
+  milvus-logs:
+    name: autheo-devhub-milvus-logs
+  etcd-data:
+    name: autheo-devhub-etcd-data
+  minio-data:
+    name: autheo-devhub-minio-data
+  qdrant-data:
+    name: autheo-devhub-qdrant-data
+  flowise-redis-data:
+    name: autheo-devhub-flowise-redis-data
+  flowise-elasticsearch-data:
+    name: autheo-devhub-flowise-elasticsearch-data
+  chroma-data:
+    name: autheo-devhub-chroma-data
 
 networks:
   autheo-devhub:
