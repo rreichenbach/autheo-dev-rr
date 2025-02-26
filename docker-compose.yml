@@ -17,6 +17,48 @@ services:
       retries: 3
     networks:
       - autheo-devhub
+      
+  mattermost:
+    image: mattermost/mattermost-team-edition:latest
+    container_name: autheo-devhub-mattermost
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Database settings
+      - MM_SQLSETTINGS_DRIVERNAME=postgres
+      - MM_SQLSETTINGS_DATASOURCE=postgres://postgres:autheo_secure_pass@postgres:5432/mattermost?sslmode=disable
+      
+      # Server settings
+      - MM_SERVICESETTINGS_SITEURL=http://localhost:8085
+      - MM_SERVICESETTINGS_LISTENADDRESS=:8000
+      
+      # File storage settings
+      - MM_FILESETTINGS_DRIVERNAME=local
+      - MM_FILESETTINGS_DIRECTORY=/mattermost/data
+      
+      # Log settings
+      - MM_LOGSETTINGS_ENABLECONSOLE=true
+      - MM_LOGSETTINGS_CONSOLELEVEL=INFO
+      - MM_LOGSETTINGS_ENABLEFILE=true
+      - MM_LOGSETTINGS_FILELEVEL=INFO
+      - MM_LOGSETTINGS_FILEFORMAT=json
+      
+      # Plugin settings
+      - MM_PLUGINSETTINGS_ENABLE=true
+      - MM_PLUGINSETTINGS_DIRECTORY=/mattermost/plugins
+      - MM_PLUGINSETTINGS_CLIENTDIRECTORY=/mattermost/client/plugins
+    ports:
+      - "8085:8000"
+    volumes:
+      - mattermost-data:/mattermost/data
+      - mattermost-logs:/mattermost/logs
+      - mattermost-config:/mattermost/config
+      - mattermost-plugins:/mattermost/plugins
+      - mattermost-client-plugins:/mattermost/client/plugins
+    networks:
+      - autheo-devhub
 
   postgres:
     image: postgres:14
@@ -25,7 +67,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=autheo_secure_pass
-      - POSTGRES_MULTIPLE_DATABASES=gitea,openproject,n8n
+      - POSTGRES_MULTIPLE_DATABASES=gitea,openproject,n8n,mattermost
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-multiple-dbs.sh:/docker-entrypoint-initdb.d/init-multiple-dbs.sh
@@ -147,6 +189,16 @@ volumes:
     name: autheo-devhub-gitea-data
   n8n_data:
     name: autheo-devhub-n8n-data
+  mattermost-data:
+    name: autheo-devhub-mattermost-data
+  mattermost-logs:
+    name: autheo-devhub-mattermost-logs
+  mattermost-config:
+    name: autheo-devhub-mattermost-config
+  mattermost-plugins:
+    name: autheo-devhub-mattermost-plugins
+  mattermost-client-plugins:
+    name: autheo-devhub-mattermost-client-plugins
 
 networks:
   autheo-devhub:
