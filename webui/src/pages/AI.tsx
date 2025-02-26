@@ -20,13 +20,30 @@ import {
   Layers,
   ChevronDown,
   ChevronUp,
-  X
+  X,
+  ExternalLink
 } from 'lucide-react'
 
 // Mock data for AI page
 const featuredLLMs = [
   { name: 'Mistral-7B', stars: 1245, type: 'Language Model' },
   { name: 'LLaMA-13B', stars: 987, type: 'Language Model' }
+]
+
+// AI Tools data
+const aiTools = [
+  {
+    name: 'Flowise',
+    description: 'Low-code LLM app builder with visual workflow editor',
+    url: 'http://localhost:13000',
+    logoUrl: 'https://remarkable-smakager-ddb2b7.netlify.app/opengraph-image.png?2eca201df198027c'
+  },
+  {
+    name: 'n8n',
+    description: 'Workflow automation platform for connecting various services',
+    url: 'http://localhost:8083',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/53/N8n-logo-new.svg'
+  }
 ]
 
 const popularRPA = [
@@ -67,6 +84,9 @@ const AI: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState('')
   const [searchModalOpen, setSearchModalOpen] = React.useState(false)
   
+  // State for AI tools modal
+  const [aiToolsModalOpen, setAiToolsModalOpen] = React.useState(false)
+  
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
@@ -80,6 +100,16 @@ const AI: React.FC = () => {
   // Close search modal
   const closeSearchModal = () => {
     setSearchModalOpen(false)
+  }
+  
+  // Open AI tools modal
+  const openAiToolsModal = () => {
+    setAiToolsModalOpen(true)
+  }
+  
+  // Close AI tools modal
+  const closeAiToolsModal = () => {
+    setAiToolsModalOpen(false)
   }
 
   return (
@@ -179,6 +209,58 @@ const AI: React.FC = () => {
         </div>
       )}
 
+      {/* AI Tools Modal */}
+      {aiToolsModalOpen && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-start justify-center pt-20">
+          <div className="glass-card w-full max-w-4xl p-6 relative">
+            <button
+              onClick={closeAiToolsModal}
+              className="absolute top-4 right-4 text-white hover:text-primary"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-white">AI Tools</h2>
+              <p className="text-muted-foreground mt-2">
+                Connect to these powerful AI tools to enhance your workflow
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {aiTools.map((tool, index) => (
+                <div key={index} className="glass-card p-4 border border-border/30 hover:border-primary/50 transition-colors">
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="w-12 h-12 rounded-md overflow-hidden bg-background/30 flex items-center justify-center">
+                      <img
+                        src={tool.logoUrl}
+                        alt={`${tool.name} logo`}
+                        className="max-w-full max-h-full object-contain"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-medium text-white">{tool.name}</h3>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {tool.description}
+                  </p>
+                  <a
+                    href={tool.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="glass-button py-2 px-4 flex items-center justify-center group text-sm"
+                  >
+                    Open {tool.name}
+                    <ExternalLink className="ml-2 w-3 h-3" />
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section with Image */}
       <div className="glass-card p-0 mb-8 relative overflow-hidden">
         {/* Hero Image */}
@@ -193,10 +275,13 @@ const AI: React.FC = () => {
           324 LLM Libraries, 89 RPA Workflows Created. Automate and Innovate on DePAIN. Start Building Now!
               </p>
           <div className="flex flex-col sm:flex-row gap-4 mt-6">
-            <Link to="/ai/tools" className="glass-button py-3 px-6 flex items-center justify-center group">
+            <button
+              onClick={openAiToolsModal}
+              className="glass-button py-3 px-6 flex items-center justify-center group"
+            >
               Explore AI Tools
               <span className="ml-2 transform transition-transform group-hover:translate-x-1">→</span>
-            </Link>
+            </button>
             <Link to="/ai/rpa" className="glass-button py-3 px-6 flex items-center justify-center group">
               Automate with RPA
               <span className="ml-2 transform transition-transform group-hover:translate-x-1">→</span>
@@ -431,13 +516,13 @@ const AI: React.FC = () => {
                 </div>
               )}
               
-              <Link
-                to="/ai/tools"
+              <button
+                onClick={openAiToolsModal}
                 className="glass-button mt-4 w-full flex items-center justify-center group"
               >
                 View All Tools
                 <span className="ml-2 transform transition-transform group-hover:translate-x-1">→</span>
-              </Link>
+              </button>
             </div>
           </div>
         </div>
