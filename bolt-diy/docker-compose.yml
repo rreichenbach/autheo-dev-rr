@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # Development service
+  bolt-dev:
+    build:
+      context: .
+      target: bolt-ai-development
+    container_name: bolt-diy-dev
+    volumes:
+      - bolt-node-modules:/app/node_modules
+      - bolt-data:/app/data
+      - bolt-cache:/app/.cache
+    ports:
+      - "33000:33000"
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - development
+
+  # Production service
+  bolt-prod:
+    build:
+      context: .
+      target: bolt-ai-production
+    container_name: bolt-diy-prod
+    volumes:
+      - bolt-data:/app/data
+      - bolt-cache:/app/.cache
+    ports:
+      - "33000:33000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  bolt-node-modules:
+    name: bolt-diy-node-modules
+  bolt-data:
+    name: bolt-diy-data
+  bolt-cache:
+    name: bolt-diy-cache
+
+networks:
+  default:
+    name: bolt-diy-network
+    driver: bridge
