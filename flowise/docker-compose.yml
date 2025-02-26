@@ -1,0 +1,163 @@
+version: '3.8'
+
+services:
+  flowise:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flowise
+    restart: unless-stopped
+    ports:
+      - "13000:13000"
+    environment:
+      - PORT=13000
+      - HOST=0.0.0.0
+      - FLOWISE_USERNAME=admin
+      - FLOWISE_PASSWORD=password
+      - DATABASE_PATH=/usr/src/app/data
+      - APIKEY_PATH=/usr/src/app/data
+      - SECRETKEY_PATH=/usr/src/app/data
+      - LOG_PATH=/usr/src/app/logs
+      # Vector database connection variables
+      - MILVUS_URL=milvus:19530
+      - QDRANT_URL=http://qdrant:6333
+      - REDIS_URL=redis://redis:6379
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - CHROMA_URL=http://chroma:8000
+    volumes:
+      - flowise-data:/usr/src/app/data
+      - flowise-logs:/usr/src/app/logs
+    networks:
+      - flowise-network
+    depends_on:
+      - milvus
+      - qdrant
+      - redis
+      - elasticsearch
+      - chroma
+
+  # Milvus vector database
+  milvus:
+    image: milvusdb/milvus:v2.3.3
+    container_name: milvus
+    restart: unless-stopped
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    environment:
+      - ETCD_ENDPOINTS=etcd:2379
+      - MINIO_ADDRESS=minio:9000
+    volumes:
+      - milvus-data:/var/lib/milvus/data
+      - milvus-conf:/var/lib/milvus/conf
+      - milvus-logs:/var/lib/milvus/logs
+    networks:
+      - flowise-network
+    depends_on:
+      - etcd
+      - minio
+
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: etcd
+    restart: unless-stopped
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    volumes:
+      - etcd-data:/etcd
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    networks:
+      - flowise-network
+
+  minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    container_name: minio
+    restart: unless-stopped
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    volumes:
+      - minio-data:/minio_data
+    command: minio server /minio_data
+    networks:
+      - flowise-network
+
+  # Qdrant vector database
+  qdrant:
+    image: qdrant/qdrant:v1.6.1
+    container_name: qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    networks:
+      - flowise-network
+
+  # Redis
+  redis:
+    image: redis:7.2
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --save 60 1 --loglevel warning
+    networks:
+      - flowise-network
+
+  # Elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - flowise-network
+
+  # Chroma vector database
+  chroma:
+    image: chromadb/chroma:0.4.22
+    container_name: chroma
+    restart: unless-stopped
+    environment:
+      - ALLOW_RESET=true
+      - CHROMA_SERVER_AUTH_CREDENTIALS_FILE=
+      - CHROMA_SERVER_AUTH_CREDENTIALS=admin:admin
+      - CHROMA_SERVER_AUTH_PROVIDER=basic
+    volumes:
+      - chroma-data:/chroma/chroma
+    ports:
+      - "8000:8000"
+    networks:
+      - flowise-network
+
+volumes:
+  flowise-data:
+  flowise-logs:
+  milvus-data:
+  milvus-conf:
+  milvus-logs:
+  etcd-data:
+  minio-data:
+  qdrant-data:
+  redis-data:
+  elasticsearch-data:
+  chroma-data:
+
+networks:
+  flowise-network:
+    driver: bridge
