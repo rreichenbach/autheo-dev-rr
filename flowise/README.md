@@ -9,7 +9,7 @@ Flowise is a powerful tool that allows you to build customized LLM flows using a
 - A React frontend
 - Third-party node integrations
 
-This Docker setup includes several vector databases that can be used with Flowise:
+This Docker setup uses the official Flowise Docker image and includes several vector databases that can be used with Flowise:
 - Milvus - A cloud-native vector database for similarity search
 - Qdrant - A vector search engine
 - Redis - An in-memory data structure store
@@ -100,10 +100,10 @@ You can customize the Flowise instance by modifying the environment variables in
 | HOST | The host address | 0.0.0.0 |
 | FLOWISE_USERNAME | Admin username | admin |
 | FLOWISE_PASSWORD | Admin password | password |
-| DATABASE_PATH | Path to store the database | /usr/src/app/data |
-| APIKEY_PATH | Path to store API keys | /usr/src/app/data |
-| SECRETKEY_PATH | Path to store secret keys | /usr/src/app/data |
-| LOG_PATH | Path to store logs | /usr/src/app/logs |
+| DATABASE_PATH | Path to store the database | /root/.flowise |
+| APIKEY_PATH | Path to store API keys | /root/.flowise |
+| SECRETKEY_PATH | Path to store secret keys | /root/.flowise |
+| LOG_PATH | Path to store logs | /root/.flowise/logs |
 | MILVUS_URL | URL for Milvus connection | milvus:19530 |
 | QDRANT_URL | URL for Qdrant connection | http://qdrant:6333 |
 | REDIS_URL | URL for Redis connection | redis://redis:6379 |

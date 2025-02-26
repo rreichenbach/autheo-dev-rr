@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   flowise:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: flowiseai/flowise:latest
     container_name: flowise
     restart: unless-stopped
     ports:
@@ -14,10 +12,10 @@ services:
       - HOST=0.0.0.0
       - FLOWISE_USERNAME=admin
       - FLOWISE_PASSWORD=password
-      - DATABASE_PATH=/usr/src/app/data
-      - APIKEY_PATH=/usr/src/app/data
-      - SECRETKEY_PATH=/usr/src/app/data
-      - LOG_PATH=/usr/src/app/logs
+      - DATABASE_PATH=/root/.flowise
+      - APIKEY_PATH=/root/.flowise
+      - SECRETKEY_PATH=/root/.flowise
+      - LOG_PATH=/root/.flowise/logs
       # Vector database connection variables
       - MILVUS_URL=milvus:19530
       - QDRANT_URL=http://qdrant:6333
@@ -25,8 +23,7 @@ services:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
       - CHROMA_URL=http://chroma:8000
     volumes:
-      - flowise-data:/usr/src/app/data
-      - flowise-logs:/usr/src/app/logs
+      - flowise-data:/root/.flowise
     networks:
       - flowise-network
     depends_on:
@@ -147,7 +144,6 @@ services:
 
 volumes:
   flowise-data:
-  flowise-logs:
   milvus-data:
   milvus-conf:
   milvus-logs:
