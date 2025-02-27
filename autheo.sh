@@ -21,6 +21,7 @@ show_usage() {
     echo "  openproject - OpenProject service"
     echo "  n8n         - n8n workflow automation"
     echo "  mattermost  - Mattermost team communication"
+    echo "  sonarqube   - SonarQube code quality and security"
     echo "  all         - All services (default)"
 }
 
