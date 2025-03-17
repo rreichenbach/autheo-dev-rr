@@ -2,8 +2,14 @@ FROM node:20-alpine as deps
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Install dependencies needed to compile native modules
+RUN apk add --no-cache python3 make g++ libc6-compat
+
+# Copy package.json but NOT package-lock.json (to regenerate it)
+COPY package.json ./
+
+# Remove old dependencies and regenerate package-lock.json
+RUN rm -rf node_modules package-lock.json && npm install --legacy-peer-deps
 
 # Clean install dependencies including devDependencies
 RUN npm ci --verbose

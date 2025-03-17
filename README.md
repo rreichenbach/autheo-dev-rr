@@ -1,15 +1,36 @@
-ifconfig | grep "inet " && docker inspect autheo-devhub-webui | grep "IPAddress"
-        inet 127.0.0.1 netmask 0xff000000
-        inet 192.168.1.58 netmask 0xffffff00 broadcast 192.168.1.255
-            "SecondaryIPAddresses": null,
-            "IPAddress": "",
-                    "IPAddress": "172.27.0.3",
+# Autheo DevHub
 
-connect to the webui from another computer on your network by entering this URL in the browser:
-http://192.168.1.58
+## Prerequisites
+- A Linux or Linux-like OS (Mac Terminal, Windows with WSL or Cygwin, etc.)
+- Docker must be installed on your build machine
 
-This works because:
+## Building
+1. Clone this repo:
+   ```sh
+   git clone <repo_url>
+   ```
+2. Navigate to the project directory:
+   ```sh
+   cd autheo-dev
+   ```
+3. Start the services:
+   ```sh
+   ./autheo.sh start
+   ```
+4. To see additional commands (e.g., stop, status, etc.):
+   ```sh
+   ./autheo.sh help
+   ```
 
-192.168.1.58 is your host machine's IP address on the local network
-Port 80 is the default HTTP port, so it doesn't need to be specified in the URL
-The Docker container's port 80 is mapped to the host's port 80, making it accessible from other machines on the network
+## Accessing the Web UI
+Once all services are started, you can connect to the web UI through a browser using the addresses returned by running:
+
+```sh
+ifconfig | grep "inet " && docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' autheo-devhub-webui
+```
+
+- `127.0.0.1` is your loopback address, accessible only from your local machine.
+- Another address (e.g., `10.0.0.151`) is your LAN address, reachable by other devices on the same network.
+- The last IP address is the container's IP within the Docker network.
+
+---

@@ -158,7 +158,7 @@ services:
 
   gitea:
     build:
-      context: ./gitea/github
+      context: ./gitea/webui
       dockerfile: Dockerfile
       args:
         - TAGS=sqlite sqlite_unlock_notify
