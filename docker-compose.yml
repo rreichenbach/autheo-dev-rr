@@ -1,3 +1,6 @@
+include:
+  - ./gitea/docker-compose.yml
+
 services:
   # SonarQube service
   sonarqube:
@@ -155,38 +158,6 @@ services:
       retries: 5
     networks:
       - autheo-devhub
-
-  gitea:
-    build:
-      context: ./gitea/webui
-      dockerfile: Dockerfile
-      args:
-        - TAGS=sqlite sqlite_unlock_notify
-    container_name: autheo-devhub-gitea
-    environment:
-      - DB_TYPE=postgres
-      - DB_HOST=postgres
-      - DB_NAME=gitea
-      - DB_USER=gitea
-      - DB_PASSWD=gitea
-      - USER_UID=1000
-      - USER_GID=1000
-      - GITEA__ui__DEFAULT_THEME=gitea
-      - GITEA__ui__THEMES=gitea,arc-green,custom
-      - GITEA__server__LANDING_PAGE=explore
-    volumes:
-      - gitea_data:/data
-      - ./gitea/frontend/dist:/data/gitea/public/custom
-      - ./gitea/frontend/templates:/data/gitea/templates/custom
-    ports:
-      - "8082:3000"
-      - "2222:22"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - autheo-devhub
-    restart: always
 
   n8n:
     image: n8nio/n8n:latest
@@ -387,8 +358,6 @@ volumes:
   
   postgres_data:
     name: autheo-devhub-postgres-data
-  gitea_data:
-    name: autheo-devhub-gitea-data
   n8n_data:
     name: autheo-devhub-n8n-data
   mattermost-data:

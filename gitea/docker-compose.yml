@@ -18,7 +18,7 @@ services:
       - "8082:3000"
       - "222:22"
 
-  webui:
+  gitea-webui:
     build:
       context: ./webui
       dockerfile: Dockerfile
@@ -26,6 +26,10 @@ services:
     restart: always
     networks:
       - gitea
+    volumes:
+      - ./data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - "8084:8084"
     depends_on:
@@ -33,4 +37,4 @@ services:
 
 networks:
   gitea:
-    name: gitea_network
+    name: gitea
